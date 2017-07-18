@@ -5,6 +5,7 @@
     using System.Drawing;
     using System.Drawing.Imaging;
     using System.IO;
+    using System.Windows.Forms;
     using System.Windows.Media.Imaging;
 
     /// <summary>
@@ -16,6 +17,89 @@
         /// Cached bitmap mappings stored by this utility.
         /// </summary>
         private static TTLCache<String, Bitmap> bitmapCache = new TTLCache<String, Bitmap>();
+
+        /// <summary>
+        /// Converts a bitmap to a purely black and white bitmap.
+        /// </summary>
+        /// <param name="bitmap">The bitmap to polarize.</param>
+        /// <returns>A polarized black and white bitmap.</returns>
+        public static Bitmap PolarizeBlackWhite(Bitmap bitmap)
+        {
+            bitmap = ImageUtils.Clone(bitmap);
+
+            for (int y = 0; y < bitmap.Height; y++)
+            {
+                for (int x = 0; x < bitmap.Width; x++)
+                {
+                    Color c = bitmap.GetPixel(x, y);
+                    int rgb = (int)(Math.Round(((c.R + c.G + c.B) / 3.0) / 255) * 255);
+                    bitmap.SetPixel(x, y, Color.FromArgb(rgb, rgb, rgb));
+                }
+            }
+
+            return bitmap;
+        }
+
+        /// <summary>
+        /// Clones the given bitmap, and ensures the format is 24bppRgb.
+        /// </summary>
+        /// <param name="sourceBitmap">The bitmap to clone.</param>
+        /// <returns>A cloned bitmap.</returns>
+        public static Bitmap Clone(Bitmap sourceBitmap)
+        {
+            Bitmap clone = new Bitmap(sourceBitmap.Width, sourceBitmap.Height, PixelFormat.Format24bppRgb);
+
+            using (Graphics gr = Graphics.FromImage(clone))
+            {
+                gr.DrawImage(sourceBitmap, new Rectangle(0, 0, clone.Width, clone.Height));
+            }
+
+            return clone;
+        }
+
+        /// <summary>
+        /// Copies a section of a given bitmap.
+        /// </summary>
+        /// <param name="sourceBitmap">The source bitmap.</param>
+        /// <param name="section">The section to copy.</param>
+        /// <returns>The section of the given bitmap.</returns>
+        public static Bitmap Copy(Bitmap sourceBitmap, Rectangle section)
+        {
+            // Create the new bitmap and associated graphics object
+            Bitmap bitmap = new Bitmap(section.Width, section.Height, PixelFormat.Format24bppRgb);
+            Graphics graphics = Graphics.FromImage(bitmap);
+
+            // Draw the specified section of the source bitmap to the new one
+            graphics.DrawImage(sourceBitmap, 0, 0, section, GraphicsUnit.Pixel);
+
+            // Clean up
+            graphics.Dispose();
+
+            // Return the bitmap
+            return bitmap;
+        }
+
+        /// <summary>
+        /// Collects a screen shot of the entire screen.
+        /// </summary>
+        /// <returns>The screen shot of the entire screen.</returns>
+        public static Bitmap CollectScreenCapture()
+        {
+            Bitmap screenShot = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, PixelFormat.Format24bppRgb);
+
+            using (Graphics graphics = Graphics.FromImage(screenShot))
+            {
+                graphics.CopyFromScreen(
+                    Screen.PrimaryScreen.Bounds.X,
+                    Screen.PrimaryScreen.Bounds.Y,
+                    0,
+                    0,
+                    screenShot.Size,
+                    CopyPixelOperation.SourceCopy);
+            }
+
+            return screenShot;
+        }
 
         /// <summary>
         /// Loads an image from the given uri.

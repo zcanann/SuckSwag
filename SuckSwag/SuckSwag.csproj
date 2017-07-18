@@ -193,6 +193,18 @@
     <Folder Include="Source\MVVM\Behavior\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AForge.NET\Sources\Core\Core.csproj">
+      <Project>{631ac093-430f-45f4-ba0c-af0f0405918a}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AForge.NET\Sources\Imaging\Imaging.csproj">
+      <Project>{c6a8b9ae-0749-41c7-8ff9-02c156696f45}</Project>
+      <Name>Imaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AForge.NET\Sources\Math\Math.csproj">
+      <Project>{c0faf524-72e4-46f7-8c1b-a6b74dec5ebe}</Project>
+      <Name>Math</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Xceed.Wpf.AvalonDock\Xceed.Wpf.AvalonDock.csproj">
       <Project>{60d1d960-8aae-4f87-8d85-0c2bdd6254b1}</Project>
       <Name>Xceed.Wpf.AvalonDock</Name>
