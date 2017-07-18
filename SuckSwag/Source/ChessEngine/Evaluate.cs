@@ -1,6 +1,6 @@
 using System;
 
-namespace SuckSwag
+namespace SuckSwag.Source.ChessEngine
 {
     public class Evaluate
     {

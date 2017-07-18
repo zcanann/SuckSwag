@@ -1,4 +1,4 @@
-namespace SuckSwag
+namespace SuckSwag.Source.ChessEngine
 {
     /// <summary>
     /// A small helper class that makes it possible to return two values from a function.

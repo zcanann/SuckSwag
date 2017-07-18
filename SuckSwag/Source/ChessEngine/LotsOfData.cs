@@ -1,4 +1,4 @@
-namespace SuckSwag
+namespace SuckSwag.Source.ChessEngine
 {
     /// <summary>
     /// Holder of data Files

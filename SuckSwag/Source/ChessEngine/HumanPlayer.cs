@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SuckSwag
+namespace SuckSwag.Source.ChessEngine
 {
     /// <summary>
     /// A player that reads input from the keyboard.

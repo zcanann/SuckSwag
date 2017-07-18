@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SuckSwag
+namespace SuckSwag.Source.ChessEngine
 {
     public class TranspositionTable
     {

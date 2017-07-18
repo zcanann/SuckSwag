@@ -1,8 +1,7 @@
 using System;
 using System.Security.Cryptography;
 
-
-namespace SuckSwag
+namespace SuckSwag.Source.ChessEngine
 {
     /**
      * Stores the state of a chess position.

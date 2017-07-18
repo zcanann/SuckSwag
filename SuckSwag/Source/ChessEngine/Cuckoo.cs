@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 
-namespace SuckSwag
+namespace SuckSwag.Source.ChessEngine
 {
     public class Cuckoo
     {

@@ -64,6 +64,27 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Source\BoardParser.cs" />
+    <Compile Include="Source\ChessEngine\BitBoard.cs" />
+    <Compile Include="Source\ChessEngine\Book.cs" />
+    <Compile Include="Source\ChessEngine\ComputerPlayer.cs" />
+    <Compile Include="Source\ChessEngine\Cuckoo.cs" />
+    <Compile Include="Source\ChessEngine\Evaluate.cs" />
+    <Compile Include="Source\ChessEngine\Game.cs" />
+    <Compile Include="Source\ChessEngine\History.cs" />
+    <Compile Include="Source\ChessEngine\HumanPlayer.cs" />
+    <Compile Include="Source\ChessEngine\KillerTable.cs" />
+    <Compile Include="Source\ChessEngine\LotsOfData.cs" />
+    <Compile Include="Source\ChessEngine\Move.cs" />
+    <Compile Include="Source\ChessEngine\MoveGen.cs" />
+    <Compile Include="Source\ChessEngine\Piece.cs" />
+    <Compile Include="Source\ChessEngine\Player.cs" />
+    <Compile Include="Source\ChessEngine\Position.cs" />
+    <Compile Include="Source\ChessEngine\Search.cs" />
+    <Compile Include="Source\ChessEngine\TextIO.cs" />
+    <Compile Include="Source\ChessEngine\TranspositionTable.cs" />
+    <Compile Include="Source\ChessEngine\TwoReturnValues.cs" />
+    <Compile Include="Source\ChessEngine\UndoInfo.cs" />
     <Compile Include="Source\Controls\CenteredDialogBox.cs" />
     <Compile Include="Source\Controls\ControlThreadingHelper.cs" />
     <Compile Include="Source\Controls\DarkBrushes.cs" />
@@ -71,6 +92,9 @@
     <Compile Include="Source\Docking\PanesStyleSelector.cs" />
     <Compile Include="Source\Docking\PaneViewModel.cs" />
     <Compile Include="Source\Docking\ToolViewModel.cs" />
+    <Compile Include="Source\GameState\BoardRecognition.cs" />
+    <Compile Include="Source\GameState\GameBoard.cs" />
+    <Compile Include="Source\GameState\GamePiece.cs" />
     <Compile Include="Source\Main\MainViewModel.cs" />
     <Compile Include="Source\MVVM\Command\EventToCommand.cs" />
     <Compile Include="Source\MVVM\Command\IEventArgsConverter.cs" />
