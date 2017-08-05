@@ -99,7 +99,6 @@
     <Compile Include="Source\Docking\PanesStyleSelector.cs" />
     <Compile Include="Source\Docking\PaneViewModel.cs" />
     <Compile Include="Source\Docking\ToolViewModel.cs" />
-    <Compile Include="Source\Engine\BoardRecognition.cs" />
     <Compile Include="Source\Engine\GameBoard.cs" />
     <Compile Include="Source\Engine\GamePiece.cs" />
     <Compile Include="Source\Main\MainViewModel.cs" />

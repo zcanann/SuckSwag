@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 
 namespace SuckSwag.Source.GameState
 {
@@ -10,7 +9,6 @@ namespace SuckSwag.Source.GameState
         public GameBoard()
         {
             this.Pieces = new GamePiece[SquareCount, SquareCount];
-            this.BoardCapture = new BoardRecognition();
             this.PlayingWhite = true;
             this.WhiteToMove = true;
 
@@ -39,15 +37,6 @@ namespace SuckSwag.Source.GameState
         public bool BlackCanCastleKS { get; private set; }
 
         public bool BlackCanCastleQS { get; private set; }
-
-        private BoardRecognition BoardCapture { get; set; }
-
-        public Bitmap Update()
-        {
-            Bitmap newBoard = this.BoardCapture.UpdateGameBoard(this);
-
-            return newBoard;
-        }
 
         public int GetPieceCount()
         {

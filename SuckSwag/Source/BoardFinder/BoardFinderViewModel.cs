@@ -2,7 +2,15 @@
 {
     using Docking;
     using Main;
+    using SuckSwag.Source.GameState;
+    using SuckSwag.Source.SquareViewer;
+    using SuckSwag.Source.Utils;
     using System;
+    using System.Collections.Generic;
+    using System.Drawing;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Media.Imaging;
@@ -26,12 +34,21 @@
 
         private BitmapImage boardImage;
 
+        public static Bitmap Board { get; private set; }
+
         /// <summary>
         /// Prevents a default instance of the <see cref="BoardFinderViewModel" /> class from being created.
         /// </summary>
         private BoardFinderViewModel() : base("Board Finder")
         {
             this.ContentId = BoardFinderViewModel.ToolContentId;
+
+            Assembly self = Assembly.GetExecutingAssembly();
+
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.board.bmp"))
+            {
+                BoardFinderViewModel.Board = new Bitmap(resourceStream);
+            }
 
             Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
@@ -59,9 +76,15 @@
             }
         }
 
-        public void ParseBoard()
+        public Bitmap FindBoard()
         {
+            IEnumerable<Bitmap> potentialBoards = SquareViewerViewModel.GetInstance().FindSquares();
 
+            Bitmap board = ImageRecognition.BestMatch(potentialBoards.ToArray(), BoardFinderViewModel.Board);
+
+            this.BoardImage = ImageUtils.BitmapToBitmapImage(ImageUtils.Tint(board, Color.DarkBlue));
+
+            return board;
         }
     }
     //// End class

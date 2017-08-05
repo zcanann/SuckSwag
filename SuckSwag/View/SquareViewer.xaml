@@ -19,7 +19,7 @@
             <Image
                 Grid.Column="0"
                 Margin="4"
-                Stretch="Fill"
+                Stretch="Uniform"
                 Source="{Binding SquaresImage}" />
         </Grid>
     </Grid>

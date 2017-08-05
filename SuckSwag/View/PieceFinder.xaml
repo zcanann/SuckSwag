@@ -6,20 +6,33 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="SuckSwagPieceFinder"
-    d:DesignHeight="256"
+    d:DesignHeight="320"
     d:DesignWidth="256"
     x:ClassModifier="internal"
     DataContext="{Binding PieceFinderViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
     <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
         <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition />
-            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="114"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="114"/>
+                </Grid.RowDefinitions>
+                <TextBox Grid.Column="0"
+                         FontFamily="Courier New"
+                         FontSize="12"
+                         IsReadOnly="True"
+                         Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                         Foreground="{StaticResource AvalonDock_Expression_BaseColor7}"
+                         Text="{Binding BoardText, Mode=OneWay}"/>
+            </Grid>
             <Image
-                Grid.Column="0"
+                Grid.Row="1"
                 Margin="4"
-                Stretch="Fill"
+                Stretch="Uniform"
                 Source="{Binding BoardImage}" />
         </Grid>
     </Grid>

@@ -3,7 +3,7 @@
     using AForge.Imaging;
     using Docking;
     using Main;
-    using SuckSwag.Source.GameState;
+    using SuckSwag.Source.BoardFinder;
     using SuckSwag.Source.Utils;
     using SuckSwag.Source.Utils.Extensions;
     using System;
@@ -54,6 +54,9 @@
             return SquareViewerViewModel.squareViewerViewModelInstance.Value;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public BitmapImage SquaresImage
         {
             get
@@ -68,9 +71,16 @@
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private Pen RedPen { get; set; }
 
-        public IEnumerable<Bitmap> Update()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Bitmap> FindSquares()
         {
             List<Bitmap> potentialBoards = new List<Bitmap>();
             Bitmap screenShot = ImageUtils.CollectScreenCapture();
@@ -90,7 +100,7 @@
             foreach (Rectangle rectangle in rectangles)
             {
                 Bitmap parsedRectangle = ImageUtils.Copy(screenShot, rectangle);
-                Bitmap resizedRectangle = new Bitmap(parsedRectangle, new Size(BoardRecognition.Board.Width, BoardRecognition.Board.Height));
+                Bitmap resizedRectangle = new Bitmap(parsedRectangle, new Size(BoardFinderViewModel.Board.Width, BoardFinderViewModel.Board.Height));
                 potentialBoards.Add(ImageUtils.Clone(resizedRectangle));
             }
 
@@ -105,7 +115,7 @@
                 }
             }
 
-            this.SquaresImage = ImageUtils.BitmapToBitmapImage(screenShot);
+            this.SquaresImage = ImageUtils.BitmapToBitmapImage(ImageUtils.Tint(screenShot, Color.DarkBlue));
 
             return potentialBoards;
         }
