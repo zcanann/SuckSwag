@@ -64,27 +64,34 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Source\BoardParser.cs" />
-    <Compile Include="Source\ChessEngine\BitBoard.cs" />
-    <Compile Include="Source\ChessEngine\Book.cs" />
-    <Compile Include="Source\ChessEngine\ComputerPlayer.cs" />
-    <Compile Include="Source\ChessEngine\Cuckoo.cs" />
-    <Compile Include="Source\ChessEngine\Evaluate.cs" />
-    <Compile Include="Source\ChessEngine\Game.cs" />
-    <Compile Include="Source\ChessEngine\History.cs" />
-    <Compile Include="Source\ChessEngine\HumanPlayer.cs" />
-    <Compile Include="Source\ChessEngine\KillerTable.cs" />
-    <Compile Include="Source\ChessEngine\LotsOfData.cs" />
-    <Compile Include="Source\ChessEngine\Move.cs" />
-    <Compile Include="Source\ChessEngine\MoveGen.cs" />
-    <Compile Include="Source\ChessEngine\Piece.cs" />
-    <Compile Include="Source\ChessEngine\Player.cs" />
-    <Compile Include="Source\ChessEngine\Position.cs" />
-    <Compile Include="Source\ChessEngine\Search.cs" />
-    <Compile Include="Source\ChessEngine\TextIO.cs" />
-    <Compile Include="Source\ChessEngine\TranspositionTable.cs" />
-    <Compile Include="Source\ChessEngine\TwoReturnValues.cs" />
-    <Compile Include="Source\ChessEngine\UndoInfo.cs" />
+    <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
+    <Compile Include="Source\ActionScheduler\DependencyBehavior.cs" />
+    <Compile Include="Source\ActionScheduler\ScheduledTask.cs" />
+    <Compile Include="Source\Engine\EngineViewModel.cs" />
+    <Compile Include="Source\Engine\EngineTask.cs" />
+    <Compile Include="Source\PieceFinder\PieceFinderViewModel.cs" />
+    <Compile Include="Source\Engine\ImageRecognition.cs" />
+    <Compile Include="Source\BoardFinder\BoardFinderViewModel.cs" />
+    <Compile Include="Source\Engine\ChessEngine\BitBoard.cs" />
+    <Compile Include="Source\Engine\ChessEngine\Book.cs" />
+    <Compile Include="Source\Engine\ChessEngine\ComputerPlayer.cs" />
+    <Compile Include="Source\Engine\ChessEngine\Cuckoo.cs" />
+    <Compile Include="Source\Engine\ChessEngine\Evaluate.cs" />
+    <Compile Include="Source\Engine\ChessEngine\Game.cs" />
+    <Compile Include="Source\Engine\ChessEngine\History.cs" />
+    <Compile Include="Source\Engine\ChessEngine\HumanPlayer.cs" />
+    <Compile Include="Source\Engine\ChessEngine\KillerTable.cs" />
+    <Compile Include="Source\Engine\ChessEngine\LotsOfData.cs" />
+    <Compile Include="Source\Engine\ChessEngine\Move.cs" />
+    <Compile Include="Source\Engine\ChessEngine\MoveGen.cs" />
+    <Compile Include="Source\Engine\ChessEngine\Piece.cs" />
+    <Compile Include="Source\Engine\ChessEngine\Player.cs" />
+    <Compile Include="Source\Engine\ChessEngine\Position.cs" />
+    <Compile Include="Source\Engine\ChessEngine\Search.cs" />
+    <Compile Include="Source\Engine\ChessEngine\TextIO.cs" />
+    <Compile Include="Source\Engine\ChessEngine\TranspositionTable.cs" />
+    <Compile Include="Source\Engine\ChessEngine\TwoReturnValues.cs" />
+    <Compile Include="Source\Engine\ChessEngine\UndoInfo.cs" />
     <Compile Include="Source\Controls\CenteredDialogBox.cs" />
     <Compile Include="Source\Controls\ControlThreadingHelper.cs" />
     <Compile Include="Source\Controls\DarkBrushes.cs" />
@@ -92,9 +99,9 @@
     <Compile Include="Source\Docking\PanesStyleSelector.cs" />
     <Compile Include="Source\Docking\PaneViewModel.cs" />
     <Compile Include="Source\Docking\ToolViewModel.cs" />
-    <Compile Include="Source\GameState\BoardRecognition.cs" />
-    <Compile Include="Source\GameState\GameBoard.cs" />
-    <Compile Include="Source\GameState\GamePiece.cs" />
+    <Compile Include="Source\Engine\BoardRecognition.cs" />
+    <Compile Include="Source\Engine\GameBoard.cs" />
+    <Compile Include="Source\Engine\GamePiece.cs" />
     <Compile Include="Source\Main\MainViewModel.cs" />
     <Compile Include="Source\MVVM\Command\EventToCommand.cs" />
     <Compile Include="Source\MVVM\Command\IEventArgsConverter.cs" />
@@ -103,7 +110,6 @@
     <Compile Include="Source\MVVM\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Source\MVVM\Converters\DataGridIndexConverter.cs" />
     <Compile Include="Source\MVVM\Converters\IconConverter.cs" />
-    <Compile Include="Source\MVVM\Converters\Int32ToHexConverter.cs" />
     <Compile Include="Source\MVVM\Converters\IntPtrToAddressConverter.cs" />
     <Compile Include="Source\MVVM\Converters\ListViewIndexConverter.cs" />
     <Compile Include="Source\MVVM\Converters\ValueToMetricSize.cs" />
@@ -134,29 +140,29 @@
     <Compile Include="Source\MVVM\Views\IDialogService.cs" />
     <Compile Include="Source\MVVM\Views\INavigationService.cs" />
     <Compile Include="Source\SquareViewer\SquareViewerViewModel.cs" />
-    <Compile Include="Source\Utils\CheckSyntax.cs" />
-    <Compile Include="Source\Utils\Compression.cs" />
     <Compile Include="Source\Utils\Conversions.cs" />
-    <Compile Include="Source\Utils\DataStructures\BiDictionary.cs" />
-    <Compile Include="Source\Utils\DataStructures\CircularLinkedList.cs" />
-    <Compile Include="Source\Utils\DataStructures\ConcurrentHashSet.cs" />
     <Compile Include="Source\Utils\DataStructures\TTLCache.cs" />
     <Compile Include="Source\Utils\Extensions\ArrayExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\ColorExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\DependencyObjectExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\DoubleExtensions.cs" />
-    <Compile Include="Source\Utils\Extensions\EnumExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\IntegerExtensions.cs" />
-    <Compile Include="Source\Utils\Extensions\IntPtrExtensions.cs" />
+    <Compile Include="Source\Utils\Extensions\LinkedListExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\ObjectExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\PrimitiveExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\SingleExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\StringExtensions.cs" />
-    <Compile Include="Source\Utils\Hashing.cs" />
     <Compile Include="Source\Utils\ImageUtils.cs" />
-    <Compile Include="Source\Utils\PrimitiveTypes.cs" />
-    <Compile Include="Source\Utils\StaticRandom.cs" />
+    <Compile Include="View\Engine.xaml.cs">
+      <DependentUpon>Engine.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PieceFinder.xaml.cs">
+      <DependentUpon>PieceFinder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\BoardFinder.xaml.cs">
+      <DependentUpon>BoardFinder.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\SquareViewer.xaml.cs">
       <DependentUpon>SquareViewer.xaml</DependentUpon>
     </Compile>
@@ -166,6 +172,18 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\Engine.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\PieceFinder.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\BoardFinder.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\SquareViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -241,6 +259,21 @@
     <Resource Include="Content\Minimize.png" />
     <Resource Include="Content\Maximize.png" />
     <Resource Include="Content\Close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Content\Images\black_bishop.bmp" />
+    <EmbeddedResource Include="Content\Images\black_king.bmp" />
+    <EmbeddedResource Include="Content\Images\black_knight.bmp" />
+    <EmbeddedResource Include="Content\Images\black_pawn.bmp" />
+    <EmbeddedResource Include="Content\Images\black_queen.bmp" />
+    <EmbeddedResource Include="Content\Images\black_rook.bmp" />
+    <EmbeddedResource Include="Content\Images\board.bmp" />
+    <EmbeddedResource Include="Content\Images\white_bishop.bmp" />
+    <EmbeddedResource Include="Content\Images\white_king.bmp" />
+    <EmbeddedResource Include="Content\Images\white_knight.bmp" />
+    <EmbeddedResource Include="Content\Images\white_pawn.bmp" />
+    <EmbeddedResource Include="Content\Images\white_queen.bmp" />
+    <EmbeddedResource Include="Content\Images\white_rook.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

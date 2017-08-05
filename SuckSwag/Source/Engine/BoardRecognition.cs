@@ -18,84 +18,82 @@
         /// </summary>
         public BoardRecognition()
         {
-            this.ImageRecognition = new ExhaustiveTemplateMatching();
-
             Assembly self = Assembly.GetExecutingAssembly();
 
             HashSet<Bitmap> allPieces = new HashSet<Bitmap>();
 
-            using (Stream resourceStream = self.GetManifestResourceStream("Enfoiree.Content.Images.board.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.board.bmp"))
             {
                 BoardRecognition.Board = new Bitmap(resourceStream);
             }
 
-            using (Stream resourceStream = self.GetManifestResourceStream("Enfoiree.Content.Images.black_bishop.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.black_bishop.bmp"))
             {
                 BoardRecognition.BlackBishop = new Bitmap(resourceStream);
                 allPieces.Add(BoardRecognition.BlackBishop);
             }
 
-            using (Stream resourceStream = self.GetManifestResourceStream("Enfoiree.Content.Images.black_king.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.black_king.bmp"))
             {
                 BoardRecognition.BlackKing = new Bitmap(resourceStream);
                 allPieces.Add(BoardRecognition.BlackKing);
             }
 
-            using (Stream resourceStream = self.GetManifestResourceStream("Enfoiree.Content.Images.black_knight.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.black_knight.bmp"))
             {
                 BoardRecognition.BlackKnight = new Bitmap(resourceStream);
                 allPieces.Add(BoardRecognition.BlackKnight);
             }
 
-            using (Stream resourceStream = self.GetManifestResourceStream("Enfoiree.Content.Images.black_pawn.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.black_pawn.bmp"))
             {
                 BoardRecognition.BlackPawn = new Bitmap(resourceStream);
                 allPieces.Add(BoardRecognition.BlackPawn);
             }
 
-            using (Stream resourceStream = self.GetManifestResourceStream("Enfoiree.Content.Images.black_queen.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.black_queen.bmp"))
             {
                 BoardRecognition.BlackQueen = new Bitmap(resourceStream);
                 allPieces.Add(BoardRecognition.BlackQueen);
             }
 
-            using (Stream resourceStream = self.GetManifestResourceStream("Enfoiree.Content.Images.black_rook.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.black_rook.bmp"))
             {
                 BoardRecognition.BlackRook = new Bitmap(resourceStream);
                 allPieces.Add(BoardRecognition.BlackRook);
             }
 
-            using (Stream resourceStream = self.GetManifestResourceStream("Enfoiree.Content.Images.white_bishop.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.white_bishop.bmp"))
             {
                 BoardRecognition.WhiteBishop = new Bitmap(resourceStream);
                 allPieces.Add(BoardRecognition.WhiteBishop);
             }
 
-            using (Stream resourceStream = self.GetManifestResourceStream("Enfoiree.Content.Images.white_king.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.white_king.bmp"))
             {
                 BoardRecognition.WhiteKing = new Bitmap(resourceStream);
                 allPieces.Add(BoardRecognition.WhiteKing);
             }
 
-            using (Stream resourceStream = self.GetManifestResourceStream("Enfoiree.Content.Images.white_knight.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.white_knight.bmp"))
             {
                 BoardRecognition.WhiteKnight = new Bitmap(resourceStream);
                 allPieces.Add(BoardRecognition.WhiteKnight);
             }
 
-            using (Stream resourceStream = self.GetManifestResourceStream("Enfoiree.Content.Images.white_pawn.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.white_pawn.bmp"))
             {
                 BoardRecognition.WhitePawn = new Bitmap(resourceStream);
                 allPieces.Add(BoardRecognition.WhitePawn);
             }
 
-            using (Stream resourceStream = self.GetManifestResourceStream("Enfoiree.Content.Images.white_queen.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.white_queen.bmp"))
             {
                 BoardRecognition.WhiteQueen = new Bitmap(resourceStream);
                 allPieces.Add(BoardRecognition.WhiteQueen);
             }
 
-            using (Stream resourceStream = self.GetManifestResourceStream("Enfoiree.Content.Images.white_rook.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.white_rook.bmp"))
             {
                 BoardRecognition.WhiteRook = new Bitmap(resourceStream);
                 allPieces.Add(BoardRecognition.WhiteRook);
@@ -106,9 +104,7 @@
 
         private Bitmap CurrentBoard { get; set; }
 
-        private ExhaustiveTemplateMatching ImageRecognition { get; set; }
-
-        private static Bitmap Board { get; set; }
+        public static Bitmap Board { get; set; }
 
         public static int BoardPixelSize
         {
@@ -173,7 +169,7 @@
                 for (int row = 0; row < GameBoard.SquareCount; row++)
                 {
                     Bitmap square = ImageUtils.Copy(capturedBoard, new Rectangle(row * squareSize, col * squareSize, squareSize, squareSize));
-                    Bitmap bestMatch = this.BestMatch(new Bitmap[] { ImageUtils.PolarizeBlackWhite(square) }, BoardRecognition.AllPieces);
+                    Bitmap bestMatch = ImageRecognition.BestMatch(new Bitmap[] { ImageUtils.PolarizeBlackWhite(square) }, BoardRecognition.AllPieces);
 
                     if (bestMatch == BoardRecognition.WhitePawn)
                     {
@@ -261,47 +257,7 @@
                 potentialBoards.Add(ImageUtils.Clone(resizedRectangle));
             }
 
-            return this.BestMatch(potentialBoards.ToArray(), BoardRecognition.Board);
-        }
-
-        /// <summary>
-        /// Finds the best match for the given candidate image against the provided templates.
-        /// </summary>
-        /// <param name="candidates">The image being compared.</param>
-        /// <param name="templates">The templates against which to compare the image.</param>
-        /// <returns></returns>
-        private Bitmap BestMatch(IEnumerable<Bitmap> candidates, params Bitmap[] templates)
-        {
-            const float similarityThreshold = 0.25f;
-
-            if (candidates == null || candidates.Count() <= 0)
-            {
-                return null;
-            }
-
-            Bitmap bestMatch = candidates
-              // Get the similarity to all template images
-              .Select(candidate =>
-                  new
-                  {
-                      bitmap = candidate,
-                      matchings = templates.Select(template => this.ImageRecognition.ProcessImage(candidate, template)),
-                  })
-              .Select(candidate =>
-                  new
-                  {
-                      bitmap = candidate.bitmap,
-                      similarity = candidate.matchings.Select(match => match.Count() > 0 ? match[0].Similarity : 0.0f).Max(),
-                  })
-
-               // Threshold the similarity
-               .Where(board => board.similarity > similarityThreshold)
-
-               // Pick the best
-               .OrderByDescending(template => template.similarity)
-               .FirstOrDefault()?.bitmap;
-
-            return bestMatch;
+            return ImageRecognition.BestMatch(potentialBoards.ToArray(), BoardRecognition.Board);
         }
     }
     //// End class

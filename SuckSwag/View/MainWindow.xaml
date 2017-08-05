@@ -10,8 +10,8 @@
     xmlns:view="clr-namespace:SuckSwag.View"
     x:Name="SuckSwagWindow"
     Title="SuckSwag"
-    Width="840"
-    Height="840"
+    Width="1280"
+    Height="640"
     x:ClassModifier="internal"
     AllowsTransparency="False"
     DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}"
@@ -55,12 +55,9 @@
                 <shell:ColumnDefinition Width="Auto" />
 
             </shell:Grid.ColumnDefinitions>
-            <shell:Grid Grid.Column="0">
 
+            <shell:Grid Grid.Column="0">
                 <shell:Grid.ColumnDefinitions>
-                    <shell:ColumnDefinition Width="Auto" />
-                    <shell:ColumnDefinition Width="Auto" />
-                    <shell:ColumnDefinition Width="Auto" />
                     <shell:ColumnDefinition Width="Auto" />
                     <shell:ColumnDefinition Width="Auto" />
                 </shell:Grid.ColumnDefinitions>
@@ -74,27 +71,10 @@
                 <shell:TextBlock
                     Grid.Column="1"
                     VerticalAlignment="Center"
-                    DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                    Foreground="{StaticResource AvalonDock_Expression_BaseColor7}"
-                    Text="* "
-                    Visibility="{Binding ProjectExplorerViewModel.HasUnsavedChanges, Converter={StaticResource BoolToVisibilityConverter}}" />
-                <shell:TextBlock
-                    Grid.Column="2"
-                    VerticalAlignment="Center"
                     Foreground="{StaticResource AvalonDock_Expression_BaseColor7}"
                     Text="SuckSwag" />
-                <shell:TextBlock
-                    Grid.Column="3"
-                    VerticalAlignment="Center"
-                    Foreground="{StaticResource AvalonDock_Expression_BaseColor7}"
-                    Text=" - " />
-                <shell:TextBlock
-                    Grid.Column="4"
-                    VerticalAlignment="Center"
-                    DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                    Foreground="{StaticResource AvalonDock_Expression_BaseColor7}"
-                    Text="{Binding ProjectExplorerViewModel.ProjectFilePath}" />
             </shell:Grid>
+
             <shell:Menu
                 Grid.Column="1"
                 VerticalAlignment="Center"
@@ -189,9 +169,24 @@
                     Header="View"
                     Style="{StaticResource DropDown}">
                     <shell:MenuItem
+                        Header="Engine"
+                        IsCheckable="True"
+                        IsChecked="{Binding EngineViewModel.IsVisible, Mode=TwoWay}"
+                        Style="{StaticResource menuItemStyle}" />
+                    <shell:MenuItem
                         Header="Square Viewer"
                         IsCheckable="True"
                         IsChecked="{Binding SquareViewerViewModel.IsVisible, Mode=TwoWay}"
+                        Style="{StaticResource menuItemStyle}" />
+                    <shell:MenuItem
+                        Header="Board Finder"
+                        IsCheckable="True"
+                        IsChecked="{Binding BoardFinderViewModel.IsVisible, Mode=TwoWay}"
+                        Style="{StaticResource menuItemStyle}" />
+                    <shell:MenuItem
+                        Header="Piece Finder"
+                        IsCheckable="True"
+                        IsChecked="{Binding PieceFinderViewModel.IsVisible, Mode=TwoWay}"
                         Style="{StaticResource menuItemStyle}" />
                 </shell:MenuItem>
             </shell:Menu>
@@ -217,6 +212,24 @@
                             <view:SquareViewer />
                         </shell:DataTemplate>
                     </view:ViewTemplateSelector.SquareViewerViewTemplate>
+                    <!--  Board Finder  -->
+                    <view:ViewTemplateSelector.BoardFinderViewTemplate>
+                        <shell:DataTemplate>
+                            <view:BoardFinder />
+                        </shell:DataTemplate>
+                    </view:ViewTemplateSelector.BoardFinderViewTemplate>
+                    <!--  Piece Finder  -->
+                    <view:ViewTemplateSelector.PieceFinderViewTemplate>
+                        <shell:DataTemplate>
+                            <view:PieceFinder />
+                        </shell:DataTemplate>
+                    </view:ViewTemplateSelector.PieceFinderViewTemplate>
+                    <!--  Engine  -->
+                    <view:ViewTemplateSelector.EngineViewTemplate>
+                        <shell:DataTemplate>
+                            <view:Engine />
+                        </shell:DataTemplate>
+                    </view:ViewTemplateSelector.EngineViewTemplate>
                 </view:ViewTemplateSelector>
             </avalonDock:DockingManager.LayoutItemTemplateSelector>
 

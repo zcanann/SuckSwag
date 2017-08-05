@@ -85,20 +85,19 @@
         /// <returns>The screen shot of the entire screen.</returns>
         public static Bitmap CollectScreenCapture()
         {
-            Bitmap screenShot = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, PixelFormat.Format24bppRgb);
+            Bitmap screenshot = new Bitmap(SystemInformation.VirtualScreen.Width, SystemInformation.VirtualScreen.Height, PixelFormat.Format24bppRgb);
 
-            using (Graphics graphics = Graphics.FromImage(screenShot))
-            {
-                graphics.CopyFromScreen(
-                    Screen.PrimaryScreen.Bounds.X,
-                    Screen.PrimaryScreen.Bounds.Y,
-                    0,
-                    0,
-                    screenShot.Size,
-                    CopyPixelOperation.SourceCopy);
-            }
+            Graphics screenGraph = Graphics.FromImage(screenshot);
 
-            return screenShot;
+            screenGraph.CopyFromScreen(
+                SystemInformation.VirtualScreen.X,
+                SystemInformation.VirtualScreen.Y,
+                0,
+                0,
+                SystemInformation.VirtualScreen.Size,
+                CopyPixelOperation.SourceCopy);
+
+            return screenshot;
         }
 
         /// <summary>

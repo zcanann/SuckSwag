@@ -3,14 +3,14 @@
     using System.Windows.Controls;
 
     /// <summary>
-    /// Interaction logic for SquareViewer.xaml.
+    /// Interaction logic for PieceFinder.xaml.
     /// </summary>
-    internal partial class SquareViewer : UserControl
+    internal partial class PieceFinder : UserControl
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SquareViewer" /> class.
+        /// Initializes a new instance of the <see cref="PieceFinder" /> class.
         /// </summary>
-        public SquareViewer()
+        public PieceFinder()
         {
             this.InitializeComponent();
         }

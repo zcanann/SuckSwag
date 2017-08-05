@@ -3,14 +3,14 @@
     using System.Windows.Controls;
 
     /// <summary>
-    /// Interaction logic for SquareViewer.xaml.
+    /// Interaction logic for Engine.xaml.
     /// </summary>
-    internal partial class SquareViewer : UserControl
+    internal partial class Engine : UserControl
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SquareViewer" /> class.
+        /// Initializes a new instance of the <see cref="Engine" /> class.
         /// </summary>
-        public SquareViewer()
+        public Engine()
         {
             this.InitializeComponent();
         }

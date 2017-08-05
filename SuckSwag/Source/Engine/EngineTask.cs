@@ -1,20 +1,28 @@
 ﻿namespace SuckSwag.Source
 {
+    using AForge.Imaging;
     using GameState;
+    using Squalr.Source.ActionScheduler;
     using SuckSwag.Source.ChessEngine;
+    using SuckSwag.Source.SquareViewer;
+    using SuckSwag.Source.Utils;
+    using SuckSwag.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Drawing;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
     /// Analyzes the game state to produce a best move.
     /// </summary>
-    internal class BoardParser
+    internal class EngineTask : ScheduledTask
     {
-        public BoardParser()
+        public EngineTask(Action<Bitmap> updateBoardCallback) : base("Analysis", isRepeated: true, trackProgress: false)
         {
+            this.UpdateBoardCallback = updateBoardCallback;
+
             this.BestMoveCache = new Dictionary<string, string>();
             this.GameBoard = new GameBoard();
             this.SearchDepth = 5;
@@ -24,7 +32,7 @@
 
         private string LastFen { get; set; }
 
-        private Action<Bitmap, string> UpdateBoardCallback { get; set; }
+        private Action<Bitmap> UpdateBoardCallback { get; set; }
 
         private Action<string> UpdateFENCallback { get; set; }
 
@@ -40,7 +48,72 @@
 
         private static Point Destination = new Point();
 
-        public void Begin(Action<Bitmap, string> updateBoardCallback, Action<string> updateFENCallback)
+        protected override void OnUpdate()
+        {
+            SquareViewerViewModel.GetInstance().Update();
+            this.UpdateBoardCallback(this.FindSquares(ImageUtils.CollectScreenCapture()));
+
+            return;
+            DateTime startTime = DateTime.Now;
+            string nextMove = string.Empty;
+
+            // Update the board and collect the screenshot
+            Bitmap newBoard = this.GameBoard.Update();
+
+            // Calculate best move
+            string newFen = this.GameBoard.GenerateFEN();
+
+            if (newFen != this.LastFen)
+            {
+                // Use the engine to calculate the next best move
+                nextMove = Cuckoo.simplyCalculateMove(newFen, this.SearchDepth);
+
+                // Draw move suggestion line
+                this.DrawMoveSuggestion(newBoard, nextMove, this.GameBoard);
+
+                this.LastFen = newFen;
+            }
+
+            // Invoke callbacks
+            this.UpdateBoardCallback(newBoard);
+            // this.UpdateFENCallback(newFen);
+
+            // Determine how long it took to do all updates
+            TimeSpan elapsedTime = DateTime.Now - startTime;
+
+            // TODO: Adjust depth
+
+        }
+
+        private Bitmap FindSquares(Bitmap screenShot)
+        {
+            List<Bitmap> potentialBoards = new List<Bitmap>();
+
+            // Create an instance of blob counter algorithm
+            BlobCounter bc = new BlobCounter();
+            bc.BackgroundThreshold = Color.FromArgb(145, 145, 145);
+            bc.ProcessImage(screenShot);
+
+            IEnumerable<Rectangle> rects = bc.GetObjectsRectangles().Where(x => x.Width > 196 && x.Height > 196);
+
+            // Process blobs
+            using (Graphics g = Graphics.FromImage(screenShot))
+            {
+                RectangleF[] rectangles = rects.Select(x => new RectangleF(x.X, x.Y, x.Width, x.Height)).ToArray();
+
+                if (!rectangles.IsNullOrEmpty())
+                {
+                    Pen pen = new Pen(Color.Red);
+                    pen.Width = 7;
+                    g.DrawRectangles(pen, rectangles);
+                    pen.Dispose();
+                }
+            }
+
+            return screenShot;
+        }
+
+        public void Begin(Action<Bitmap> updateBoardCallback, Action<string> updateFENCallback)
         {
             this.UpdateBoardCallback = updateBoardCallback;
             this.UpdateFENCallback = updateFENCallback;
@@ -50,7 +123,6 @@
                 {
                     while (true)
                     {
-                        this.UpdateLoop();
                         Thread.Sleep(400);
                     }
                 }
@@ -122,34 +194,6 @@
 
         private void UpdateLoop()
         {
-            DateTime startTime = DateTime.Now;
-            string nextMove = string.Empty;
-
-            // Update the board and collect the screenshot
-            Bitmap newBoard = this.GameBoard.Update();
-
-            // Calculate best move
-            string newFen = this.GameBoard.GenerateFEN();
-
-            if (newFen != this.LastFen)
-            {
-                // Use the engine to calculate the next best move
-                nextMove = Cuckoo.simplyCalculateMove(newFen, this.SearchDepth);
-
-                // Draw move suggestion line
-                this.DrawMoveSuggestion(newBoard, nextMove, this.GameBoard);
-
-                this.LastFen = newFen;
-            }
-
-            // Invoke callbacks
-            this.UpdateBoardCallback(newBoard, this.GameBoard.ToString());
-            this.UpdateFENCallback(newFen);
-
-            // Determine how long it took to do all updates
-            TimeSpan elapsedTime = DateTime.Now - startTime;
-
-            // TODO: Adjust depth
         }
 
         public void SetPlayingWhite(bool whiteToPlay)

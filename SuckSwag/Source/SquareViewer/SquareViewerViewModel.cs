@@ -1,10 +1,18 @@
 ﻿namespace SuckSwag.Source.SquareViewer
 {
+    using AForge.Imaging;
     using Docking;
     using Main;
+    using SuckSwag.Source.GameState;
+    using SuckSwag.Source.Utils;
+    using SuckSwag.Source.Utils.Extensions;
     using System;
+    using System.Collections.Generic;
+    using System.Drawing;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using System.Windows.Media.Imaging;
 
     /// <summary>
     /// View model for the Square Viewer.
@@ -23,12 +31,16 @@
                 () => { return new SquareViewerViewModel(); },
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
+        private BitmapImage squaresImage;
+
         /// <summary>
         /// Prevents a default instance of the <see cref="SquareViewerViewModel" /> class from being created.
         /// </summary>
         private SquareViewerViewModel() : base("Square Viewer")
         {
             this.ContentId = SquareViewerViewModel.ToolContentId;
+
+            this.RedPen = new Pen(color: Color.Red, width: 7);
 
             Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
@@ -40,6 +52,62 @@
         public static SquareViewerViewModel GetInstance()
         {
             return SquareViewerViewModel.squareViewerViewModelInstance.Value;
+        }
+
+        public BitmapImage SquaresImage
+        {
+            get
+            {
+                return this.squaresImage;
+            }
+
+            set
+            {
+                this.squaresImage = value;
+                this.RaisePropertyChanged(nameof(this.SquaresImage));
+            }
+        }
+
+        private Pen RedPen { get; set; }
+
+        public IEnumerable<Bitmap> Update()
+        {
+            List<Bitmap> potentialBoards = new List<Bitmap>();
+            Bitmap screenShot = ImageUtils.CollectScreenCapture();
+
+            // Create an instance of blob counter algorithm
+            BlobCounter blobCounter = new BlobCounter();
+            blobCounter.BackgroundThreshold = Color.FromArgb(145, 145, 145);
+            blobCounter.ProcessImage(screenShot);
+
+            // Enforce a minimum square size, and ensure the squares are true squares and not rectangular
+            IEnumerable<Rectangle> rectangles = blobCounter.GetObjectsRectangles()
+                .Where(x => x.Width > 196)
+                .Where(x => x.Height > 196)
+                .Where(x => ((float)x.Width / (float)x.Height).AlmostEquals(1.0f));
+
+            // Process rectangles
+            foreach (Rectangle rectangle in rectangles)
+            {
+                Bitmap parsedRectangle = ImageUtils.Copy(screenShot, rectangle);
+                Bitmap resizedRectangle = new Bitmap(parsedRectangle, new Size(BoardRecognition.Board.Width, BoardRecognition.Board.Height));
+                potentialBoards.Add(ImageUtils.Clone(resizedRectangle));
+            }
+
+            // Draw rectangles
+            using (Graphics graphics = Graphics.FromImage(screenShot))
+            {
+                RectangleF[] floatRectangles = rectangles.Select(x => new RectangleF(x.X, x.Y, x.Width, x.Height)).ToArray();
+
+                if (!floatRectangles.IsNullOrEmpty())
+                {
+                    graphics.DrawRectangles(this.RedPen, floatRectangles);
+                }
+            }
+
+            this.SquaresImage = ImageUtils.BitmapToBitmapImage(screenShot);
+
+            return potentialBoards;
         }
     }
     //// End class

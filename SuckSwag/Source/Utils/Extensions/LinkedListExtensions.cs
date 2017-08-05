@@ -1,11 +1,11 @@
-﻿namespace SuckSwag.Source.Utils.DataStructures
+﻿namespace SuckSwag.Source.Utils.Extensions
 {
     using System.Collections.Generic;
 
     /// <summary>
     /// A class that enables circular linked list functions, over a normal linked list.
     /// </summary>
-    internal static class CircularLinkedList
+    internal static class LinkedListExtensions
     {
         /// <summary>
         /// Gets the next node in the linked list. If none is present, this will return the first.

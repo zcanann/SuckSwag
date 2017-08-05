@@ -1,5 +1,7 @@
 ﻿namespace SuckSwag.View
 {
+    using SuckSwag.Source.BoardFinder;
+    using SuckSwag.Source.PieceFinder;
     using SuckSwag.Source.SquareViewer;
     using System;
     using System.Windows;
@@ -23,6 +25,21 @@
         public DataTemplate SquareViewerViewTemplate { get; set; }
 
         /// <summary>
+        /// Gets or sets the template for the Board Finder.
+        /// </summary>
+        public DataTemplate BoardFinderViewTemplate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the template for the Piece Finder.
+        /// </summary>
+        public DataTemplate PieceFinderViewTemplate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the template for the Engine.
+        /// </summary>
+        public DataTemplate EngineViewTemplate { get; set; }
+
+        /// <summary>
         /// Returns the required template to display the given view model.
         /// </summary>
         /// <param name="item">The view model.</param>
@@ -33,6 +50,18 @@
             if (item is SquareViewerViewModel)
             {
                 return this.SquareViewerViewTemplate;
+            }
+            else if (item is BoardFinderViewModel)
+            {
+                return this.BoardFinderViewTemplate;
+            }
+            else if (item is PieceFinderViewModel)
+            {
+                return this.PieceFinderViewTemplate;
+            }
+            else if (item is EngineViewModel)
+            {
+                return this.EngineViewTemplate;
             }
 
             return base.SelectTemplate(item, container);

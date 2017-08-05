@@ -3,6 +3,7 @@
     using Docking;
     using Mvvm;
     using Mvvm.Command;
+    using SuckSwag.Source.BoardFinder;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -144,6 +145,7 @@
         /// </summary>
         private void StartBackgroundServices()
         {
+            EngineViewModel.GetInstance().BeginAnalysis();
         }
 
         /// <summary>

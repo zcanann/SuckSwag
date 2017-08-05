@@ -1,6 +1,8 @@
 ﻿namespace SuckSwag.View
 {
     using Source.Main;
+    using SuckSwag.Source.BoardFinder;
+    using SuckSwag.Source.PieceFinder;
     using SuckSwag.Source.SquareViewer;
 
     /// <summary>
@@ -35,6 +37,39 @@
             get
             {
                 return SquareViewerViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Board Finder view model.
+        /// </summary>
+        public BoardFinderViewModel BoardFinderViewModel
+        {
+            get
+            {
+                return BoardFinderViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Piece Finder view model.
+        /// </summary>
+        public PieceFinderViewModel PieceFinderViewModel
+        {
+            get
+            {
+                return PieceFinderViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the EngineViewModel view model.
+        /// </summary>
+        public EngineViewModel EngineViewModel
+        {
+            get
+            {
+                return EngineViewModel.GetInstance();
             }
         }
     }
