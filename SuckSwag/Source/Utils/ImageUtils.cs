@@ -1,11 +1,15 @@
 ﻿namespace SuckSwag.Source.Utils
 {
+    using AForge.Imaging;
     using DataStructures;
     using System;
+    using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Imaging;
     using System.IO;
+    using System.Linq;
     using System.Runtime.InteropServices;
+    using System.Security.Cryptography;
     using System.Windows.Forms;
     using System.Windows.Media.Imaging;
 
@@ -19,6 +23,144 @@
         /// </summary>
         private static TTLCache<String, Bitmap> bitmapCache = new TTLCache<String, Bitmap>();
 
+        private static ExhaustiveTemplateMatching recognition = new ExhaustiveTemplateMatching();
+
+        private static MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
+
+        /// <summary>
+        /// Finds the best match for the given candidate image against the provided templates.
+        /// </summary>
+        /// <param name="candidates">The image being compared.</param>
+        /// <param name="templates">The templates against which to compare the image.</param>
+        /// <returns></returns>
+        public static Bitmap BestCandidateMatch(IEnumerable<Bitmap> candidates, params Bitmap[] templates)
+        {
+            const float similarityThreshold = 0.25f;
+
+            if (candidates == null || candidates.Count() <= 0)
+            {
+                return null;
+            }
+
+            Bitmap bestMatch = candidates
+              // Get the similarity to all template images
+              .Select(candidate =>
+                  new
+                  {
+                      bitmap = candidate,
+                      matchings = templates.Select(template => recognition.ProcessImage(candidate, template)),
+                  })
+              .Select(candidate =>
+                  new
+                  {
+                      bitmap = candidate.bitmap,
+                      similarity = candidate.matchings.Select(match => match.Count() > 0 ? match[0].Similarity : 0.0f).Max(),
+                  })
+
+               // Threshold the similarity
+               .Where(board => board.similarity > similarityThreshold)
+
+               // Pick the best
+               .OrderByDescending(candidate => candidate.similarity)
+               .FirstOrDefault()?.bitmap;
+
+            return bestMatch;
+        }
+
+        /// <summary>
+        /// Finds the best match for the given candidate image against the provided templates.
+        /// </summary>
+        /// <param name="candidates">The image being compared.</param>
+        /// <param name="templates">The templates against which to compare the image.</param>
+        /// <returns></returns>
+        public static Bitmap BestTemplateMatch(IEnumerable<Bitmap> candidates, params Bitmap[] templates)
+        {
+            const float similarityThreshold = 0.25f;
+
+            if (candidates == null || candidates.Count() <= 0)
+            {
+                return null;
+            }
+
+            Bitmap bestMatch = templates
+              // Get the similarity to all template images
+              .Select(template =>
+                  new
+                  {
+                      bitmap = template,
+                      matchings = candidates.Select(candidate => recognition.ProcessImage(candidate, template)),
+                  })
+              .Select(template =>
+                  new
+                  {
+                      bitmap = template.bitmap,
+                      similarity = template.matchings.Select(match => match.Count() > 0 ? match[0].Similarity : 0.0f).Max(),
+                  })
+
+               // Threshold the similarity
+               .Where(board => board.similarity > similarityThreshold)
+
+               // Pick the best
+               .OrderByDescending(template => template.similarity)
+               .FirstOrDefault()?.bitmap;
+
+            return bestMatch;
+        }
+
+        public static Bitmap DiffBitmaps(Bitmap bitmapA, Bitmap bitmapB)
+        {
+            if (bitmapA == null || bitmapB == null || bitmapA.Width != bitmapB.Width || bitmapA.Height != bitmapB.Height)
+            {
+                return null;
+            }
+
+            BitmapData bitmapAData = bitmapA.LockBits(new Rectangle(0, 0, bitmapA.Width, bitmapA.Height), ImageLockMode.ReadOnly, bitmapA.PixelFormat);
+            BitmapData bitmapBData = bitmapB.LockBits(new Rectangle(0, 0, bitmapB.Width, bitmapB.Height), ImageLockMode.ReadOnly, bitmapB.PixelFormat);
+
+            int width = bitmapAData.Width;
+            int height = bitmapAData.Height;
+
+            int redA, greenA, blueA, redB, greenB, blueB;
+
+            int BppModifier = bitmapA.PixelFormat == PixelFormat.Format24bppRgb ? 3 : 4;
+
+            int stride = bitmapAData.Stride;
+            IntPtr scan0A = bitmapAData.Scan0;
+            IntPtr scan0B = bitmapBData.Scan0;
+
+            unsafe
+            {
+                byte* pA = (byte*)(void*)scan0A;
+                byte* pB = (byte*)(void*)scan0B;
+
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        int idx = (y * stride) + x * BppModifier;
+                        redA = pA[idx + 2];
+                        greenA = pA[idx + 1];
+                        blueA = pA[idx];
+                        redB = pB[idx + 2];
+                        greenB = pB[idx + 1];
+                        blueB = pB[idx];
+
+                        if (redA == redB && greenA == greenB && blueA == blueB)
+                        {
+                            pB[idx + 2] = 255;
+                            pB[idx + 1] = 255;
+                            pB[idx + 0] = 255;
+                        }
+                    }
+                }
+            }
+
+            bitmapA.UnlockBits(bitmapAData);
+            bitmapB.UnlockBits(bitmapBData);
+
+            return bitmapB;
+        }
+
         /// <summary>
         /// Converts a bitmap to a purely black and white bitmap.
         /// </summary>
@@ -26,6 +168,11 @@
         /// <returns>A polarized black and white bitmap.</returns>
         public static Bitmap PolarizeBlackWhite(Bitmap bitmap)
         {
+            if (bitmap == null)
+            {
+                return null;
+            }
+
             bitmap = ImageUtils.Clone(bitmap);
 
             for (int y = 0; y < bitmap.Height; y++)
@@ -113,6 +260,21 @@
             return resultBitmap;
         }
 
+        public static string ComputeImageHash(Bitmap bitmap)
+        {
+            byte[] rawImageData = new byte[bitmap.Width * bitmap.Height];
+
+            BitmapData bmpd = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height),
+                                                   ImageLockMode.ReadOnly,
+                                                   PixelFormat.Format32bppArgb);
+
+            Marshal.Copy(bmpd.Scan0, rawImageData, 0, bitmap.Width * bitmap.Height);
+
+            bitmap.UnlockBits(bmpd);
+
+            return System.Text.Encoding.UTF8.GetString(ImageUtils.md5.ComputeHash(rawImageData));
+        }
+
         /// <summary>
         /// Clones the given bitmap, and ensures the format is 24bppRgb.
         /// </summary>
@@ -120,6 +282,11 @@
         /// <returns>A cloned bitmap.</returns>
         public static Bitmap Clone(Bitmap sourceBitmap)
         {
+            if (sourceBitmap == null)
+            {
+                return null;
+            }
+
             Bitmap clone = new Bitmap(sourceBitmap.Width, sourceBitmap.Height, PixelFormat.Format24bppRgb);
 
             using (Graphics gr = Graphics.FromImage(clone))

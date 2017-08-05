@@ -2,6 +2,8 @@
 {
     using Docking;
     using Main;
+    using SuckSwag.Source.GameState;
+    using SuckSwag.Source.Utils;
     using System;
     using System.Drawing;
     using System.Threading;
@@ -79,8 +81,9 @@
 
         private void OnBoardUpdate(Bitmap boardBitmap, string bestMoveFen, bool playingWhite)
         {
+            boardBitmap = ImageUtils.Tint(boardBitmap, Color.DarkBlue);
             boardBitmap = this.DrawMoveSuggestion(boardBitmap, bestMoveFen, playingWhite);
-            // this.BoardImage = ImageUtils.BitmapToBitmapImage(board);
+            this.BoardImage = ImageUtils.BitmapToBitmapImage(boardBitmap);
         }
 
         private Bitmap DrawMoveSuggestion(Bitmap boardBitmap, string nextMove, bool playingWhite)
@@ -90,23 +93,25 @@
                 return boardBitmap;
             }
 
-            char[] Move = nextMove.ToCharArray();
+            char[] move = nextMove.ToCharArray();
 
             graphics = Graphics.FromImage(boardBitmap);
 
-            if (Move.Length < 4)
+            if (move.Length < 4)
+            {
                 return boardBitmap;
+            }
 
-            Source.X = ((byte)'h' - (byte)Move[0]);
-            Source.Y = ((byte)'8' - (byte)Move[1]);
+            Source.X = ((byte)'h' - (byte)move[0]);
+            Source.Y = ((byte)'8' - (byte)move[1]);
 
-            Destination.X = ((byte)'h' - (byte)Move[2]);
-            Destination.Y = ((byte)'8' - (byte)Move[3]);
+            Destination.X = ((byte)'h' - (byte)move[2]);
+            Destination.Y = ((byte)'8' - (byte)move[3]);
 
             if (playingWhite)
             {
-                Source.X = 8 - Source.X;
-                Destination.X = 8 - Destination.X;
+                Source.X = GameBoard.SquareCount - Source.X;
+                Destination.X = GameBoard.SquareCount - Destination.X;
                 Source.Y++;
                 Destination.Y++;
             }
@@ -114,11 +119,11 @@
             {
                 Source.X = Source.X + 1;
                 Destination.X = Destination.X + 1;
-                Source.Y = 8 - Source.Y;
-                Destination.Y = 8 - Destination.Y;
+                Source.Y = GameBoard.SquareCount - Source.Y;
+                Destination.Y = GameBoard.SquareCount - Destination.Y;
             }
 
-            int squarePixelSize = BoardFinderViewModel.Board.Width / 8;
+            int squarePixelSize = BoardFinderViewModel.Board.Width / GameBoard.SquareCount;
 
             Source.X = Source.X * squarePixelSize - squarePixelSize / 2;
             Source.Y = Source.Y * squarePixelSize - squarePixelSize / 2;

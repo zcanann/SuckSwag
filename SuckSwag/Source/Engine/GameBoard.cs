@@ -317,7 +317,15 @@ namespace SuckSwag.Source.GameState
             switch (this.Pieces[column, row].Name)
             {
                 case GamePiece.PieceName.None:
-                    return ".";
+                    if ((row % 2 == 1 && column % 2 == 0 || row % 2 == 0 && column % 2 == 1) && this.PlayingWhite ||
+                       (row % 2 == 0 && column % 2 == 0 || row % 2 == 1 && column % 2 == 1) && !this.PlayingWhite)
+                    {
+                        return "⬜"; // ⬛
+                    }
+                    else
+                    {
+                        return "⬜";
+                    }
                 case GamePiece.PieceName.Pawn:
                     if ((this.Pieces[column, row].Color == GamePiece.PieceColor.Black && this.PlayingWhite) ||
                         (this.Pieces[column, row].Color == GamePiece.PieceColor.White && !this.PlayingWhite))

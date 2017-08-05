@@ -2,7 +2,6 @@
 {
     using Docking;
     using Main;
-    using SuckSwag.Source.GameState;
     using SuckSwag.Source.SquareViewer;
     using SuckSwag.Source.Utils;
     using System;
@@ -45,9 +44,9 @@
 
             Assembly self = Assembly.GetExecutingAssembly();
 
-            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.board.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.board.png"))
             {
-                BoardFinderViewModel.Board = new Bitmap(resourceStream);
+                BoardFinderViewModel.Board = ImageUtils.Clone(new Bitmap(resourceStream));
             }
 
             Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
@@ -80,7 +79,7 @@
         {
             IEnumerable<Bitmap> potentialBoards = SquareViewerViewModel.GetInstance().FindSquares();
 
-            Bitmap board = ImageRecognition.BestMatch(potentialBoards.ToArray(), BoardFinderViewModel.Board);
+            Bitmap board = ImageUtils.BestCandidateMatch(potentialBoards.ToArray(), BoardFinderViewModel.Board);
 
             this.BoardImage = ImageUtils.BitmapToBitmapImage(ImageUtils.Tint(board, Color.DarkBlue));
 

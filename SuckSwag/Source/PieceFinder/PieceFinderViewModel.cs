@@ -36,31 +36,33 @@
 
         private String boardText;
 
-        private static Bitmap BlackPawn { get; set; }
+        private Dictionary<string, Bitmap> ImageHashes { get; set; }
 
-        private static Bitmap BlackBishop { get; set; }
+        private Bitmap BlackPawn { get; set; }
 
-        private static Bitmap BlackKnight { get; set; }
+        private Bitmap BlackBishop { get; set; }
 
-        private static Bitmap BlackRook { get; set; }
+        private Bitmap BlackKnight { get; set; }
 
-        private static Bitmap BlackQueen { get; set; }
+        private Bitmap BlackRook { get; set; }
 
-        private static Bitmap BlackKing { get; set; }
+        private Bitmap BlackQueen { get; set; }
 
-        private static Bitmap WhitePawn { get; set; }
+        private Bitmap BlackKing { get; set; }
 
-        private static Bitmap WhiteBishop { get; set; }
+        private Bitmap WhitePawn { get; set; }
 
-        private static Bitmap WhiteKnight { get; set; }
+        private Bitmap WhiteBishop { get; set; }
 
-        private static Bitmap WhiteRook { get; set; }
+        private Bitmap WhiteKnight { get; set; }
 
-        private static Bitmap WhiteQueen { get; set; }
+        private Bitmap WhiteRook { get; set; }
 
-        private static Bitmap WhiteKing { get; set; }
+        private Bitmap WhiteQueen { get; set; }
 
-        private static Bitmap[] AllPieces { get; set; }
+        private Bitmap WhiteKing { get; set; }
+
+        private Bitmap[] AllPieces { get; set; }
 
         /// <summary>
         /// Prevents a default instance of the <see cref="PieceFinderViewModel" /> class from being created.
@@ -69,82 +71,83 @@
         {
             this.ContentId = PieceFinderViewModel.ToolContentId;
 
+            this.ImageHashes = new Dictionary<string, Bitmap>();
             Assembly self = Assembly.GetExecutingAssembly();
             HashSet<Bitmap> allPieces = new HashSet<Bitmap>();
 
-            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.black_bishop.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.black_bishop.png"))
             {
-                PieceFinderViewModel.BlackBishop = new Bitmap(resourceStream);
-                allPieces.Add(PieceFinderViewModel.BlackBishop);
+                this.BlackBishop = ImageUtils.Clone(new Bitmap(resourceStream));
+                allPieces.Add(this.BlackBishop);
             }
 
-            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.black_king.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.black_king.png"))
             {
-                PieceFinderViewModel.BlackKing = new Bitmap(resourceStream);
-                allPieces.Add(PieceFinderViewModel.BlackKing);
+                this.BlackKing = ImageUtils.Clone(new Bitmap(resourceStream));
+                allPieces.Add(this.BlackKing);
             }
 
-            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.black_knight.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.black_knight.png"))
             {
-                PieceFinderViewModel.BlackKnight = new Bitmap(resourceStream);
-                allPieces.Add(PieceFinderViewModel.BlackKnight);
+                this.BlackKnight = ImageUtils.Clone(new Bitmap(resourceStream));
+                allPieces.Add(this.BlackKnight);
             }
 
-            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.black_pawn.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.black_pawn.png"))
             {
-                PieceFinderViewModel.BlackPawn = new Bitmap(resourceStream);
-                allPieces.Add(PieceFinderViewModel.BlackPawn);
+                this.BlackPawn = ImageUtils.Clone(new Bitmap(resourceStream));
+                allPieces.Add(this.BlackPawn);
             }
 
-            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.black_queen.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.black_queen.png"))
             {
-                PieceFinderViewModel.BlackQueen = new Bitmap(resourceStream);
-                allPieces.Add(PieceFinderViewModel.BlackQueen);
+                this.BlackQueen = ImageUtils.Clone(new Bitmap(resourceStream));
+                allPieces.Add(this.BlackQueen);
             }
 
-            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.black_rook.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.black_rook.png"))
             {
-                PieceFinderViewModel.BlackRook = new Bitmap(resourceStream);
-                allPieces.Add(PieceFinderViewModel.BlackRook);
+                this.BlackRook = ImageUtils.Clone(new Bitmap(resourceStream));
+                allPieces.Add(this.BlackRook);
             }
 
-            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.white_bishop.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.white_bishop.png"))
             {
-                PieceFinderViewModel.WhiteBishop = new Bitmap(resourceStream);
-                allPieces.Add(PieceFinderViewModel.WhiteBishop);
+                this.WhiteBishop = ImageUtils.Clone(new Bitmap(resourceStream));
+                allPieces.Add(this.WhiteBishop);
             }
 
-            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.white_king.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.white_king.png"))
             {
-                PieceFinderViewModel.WhiteKing = new Bitmap(resourceStream);
-                allPieces.Add(PieceFinderViewModel.WhiteKing);
+                this.WhiteKing = ImageUtils.Clone(new Bitmap(resourceStream));
+                allPieces.Add(this.WhiteKing);
             }
 
-            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.white_knight.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.white_knight.png"))
             {
-                PieceFinderViewModel.WhiteKnight = new Bitmap(resourceStream);
-                allPieces.Add(PieceFinderViewModel.WhiteKnight);
+                this.WhiteKnight = ImageUtils.Clone(new Bitmap(resourceStream));
+                allPieces.Add(this.WhiteKnight);
             }
 
-            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.white_pawn.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.white_pawn.png"))
             {
-                PieceFinderViewModel.WhitePawn = new Bitmap(resourceStream);
-                allPieces.Add(PieceFinderViewModel.WhitePawn);
+                this.WhitePawn = ImageUtils.Clone(new Bitmap(resourceStream));
+                allPieces.Add(this.WhitePawn);
             }
 
-            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.white_queen.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.white_queen.png"))
             {
-                PieceFinderViewModel.WhiteQueen = new Bitmap(resourceStream);
-                allPieces.Add(PieceFinderViewModel.WhiteQueen);
+                this.WhiteQueen = ImageUtils.Clone(new Bitmap(resourceStream));
+                allPieces.Add(this.WhiteQueen);
             }
 
-            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.white_rook.bmp"))
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.white_rook.png"))
             {
-                PieceFinderViewModel.WhiteRook = new Bitmap(resourceStream);
-                allPieces.Add(PieceFinderViewModel.WhiteRook);
+                this.WhiteRook = ImageUtils.Clone(new Bitmap(resourceStream));
+                allPieces.Add(this.WhiteRook);
             }
 
-            PieceFinderViewModel.AllPieces = allPieces.ToArray();
+            this.AllPieces = allPieces.ToArray();
 
             Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
@@ -189,11 +192,14 @@
         public Bitmap FindPieces(GameBoard gameBoard)
         {
             Bitmap board = BoardFinderViewModel.GetInstance().FindBoard();
+            Bitmap parsedPieces = ImageUtils.PolarizeBlackWhite(board);
 
-            if (board == null)
+            if (parsedPieces == null)
             {
-                return board;
+                return parsedPieces;
             }
+
+            this.BoardImage = ImageUtils.BitmapToBitmapImage(parsedPieces);
 
             int squareSize = BoardFinderViewModel.Board.Size.Width / GameBoard.SquareCount;
 
@@ -201,54 +207,66 @@
             {
                 for (int row = 0; row < GameBoard.SquareCount; row++)
                 {
-                    Bitmap square = ImageUtils.Copy(board, new Rectangle(row * squareSize, col * squareSize, squareSize, squareSize));
-                    Bitmap bestMatch = ImageRecognition.BestMatch(new Bitmap[] { ImageUtils.PolarizeBlackWhite(square) }, PieceFinderViewModel.AllPieces);
+                    Bitmap square = ImageUtils.Copy(parsedPieces, new Rectangle(row * squareSize, col * squareSize, squareSize, squareSize));
+                    Bitmap bestMatch;
 
-                    if (bestMatch == PieceFinderViewModel.WhitePawn)
+                    string imageHash = ImageUtils.ComputeImageHash(square);
+
+                    if (this.ImageHashes.ContainsKey(imageHash))
+                    {
+                        bestMatch = this.ImageHashes[imageHash];
+                    }
+                    else
+                    {
+                        bestMatch = ImageUtils.BestTemplateMatch(new Bitmap[] { square }, this.AllPieces);
+                        this.ImageHashes.Add(imageHash, bestMatch);
+                    }
+
+                    if (bestMatch == this.WhitePawn)
                     {
                         gameBoard.UpdateSquare(row, col, GamePiece.PieceName.Pawn, GamePiece.PieceColor.White);
                     }
-                    else if (bestMatch == PieceFinderViewModel.WhiteKnight)
+                    else if (bestMatch == this.WhiteKnight)
                     {
                         gameBoard.UpdateSquare(row, col, GamePiece.PieceName.Knight, GamePiece.PieceColor.White);
                     }
-                    else if (bestMatch == PieceFinderViewModel.WhiteBishop)
+                    else if (bestMatch == this.WhiteBishop)
                     {
                         gameBoard.UpdateSquare(row, col, GamePiece.PieceName.Bishop, GamePiece.PieceColor.White);
                     }
-                    else if (bestMatch == PieceFinderViewModel.WhiteRook)
+                    else if (bestMatch == this.WhiteRook)
                     {
                         gameBoard.UpdateSquare(row, col, GamePiece.PieceName.Rook, GamePiece.PieceColor.White);
                     }
-                    else if (bestMatch == PieceFinderViewModel.WhiteQueen)
+                    else if (bestMatch == this.WhiteQueen)
                     {
                         gameBoard.UpdateSquare(row, col, GamePiece.PieceName.Queen, GamePiece.PieceColor.White);
                     }
-                    else if (bestMatch == PieceFinderViewModel.WhiteKing)
+                    else if (bestMatch == this.WhiteKing)
                     {
                         gameBoard.UpdateSquare(row, col, GamePiece.PieceName.King, GamePiece.PieceColor.White);
                     }
-                    else if (bestMatch == PieceFinderViewModel.BlackPawn)
+                    else if (bestMatch == this.BlackPawn)
                     {
                         gameBoard.UpdateSquare(row, col, GamePiece.PieceName.Pawn, GamePiece.PieceColor.Black);
                     }
-                    else if (bestMatch == PieceFinderViewModel.BlackKnight)
+                    else if (bestMatch == this.BlackKnight)
                     {
                         gameBoard.UpdateSquare(row, col, GamePiece.PieceName.Knight, GamePiece.PieceColor.Black);
                     }
-                    else if (bestMatch == PieceFinderViewModel.BlackBishop)
+                    else if (bestMatch == this.BlackBishop)
                     {
                         gameBoard.UpdateSquare(row, col, GamePiece.PieceName.Bishop, GamePiece.PieceColor.Black);
                     }
-                    else if (bestMatch == PieceFinderViewModel.BlackRook)
+                    else if (bestMatch == this.BlackRook)
                     {
                         gameBoard.UpdateSquare(row, col, GamePiece.PieceName.Rook, GamePiece.PieceColor.Black);
                     }
-                    else if (bestMatch == PieceFinderViewModel.BlackQueen)
+                    else if (bestMatch == this.BlackQueen)
                     {
                         gameBoard.UpdateSquare(row, col, GamePiece.PieceName.Queen, GamePiece.PieceColor.Black);
                     }
-                    else if (bestMatch == PieceFinderViewModel.BlackKing)
+                    else if (bestMatch == this.BlackKing)
                     {
                         gameBoard.UpdateSquare(row, col, GamePiece.PieceName.King, GamePiece.PieceColor.Black);
                     }

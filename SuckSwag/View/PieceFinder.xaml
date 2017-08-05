@@ -7,30 +7,29 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="SuckSwagPieceFinder"
     d:DesignHeight="320"
-    d:DesignWidth="256"
+    d:DesignWidth="480"
     x:ClassModifier="internal"
     DataContext="{Binding PieceFinderViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
     <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="114"/>
+                <ColumnDefinition Width="196"/>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Grid Grid.Row="0">
+            <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="114"/>
+                    <RowDefinition Height="196"/>
                 </Grid.RowDefinitions>
-                <TextBox Grid.Column="0"
-                         FontFamily="Courier New"
-                         FontSize="12"
+                <TextBox Grid.Row="0"
+                         FontSize="14"
                          IsReadOnly="True"
                          Background="{StaticResource AvalonDock_Expression_BaseColor3}"
                          Foreground="{StaticResource AvalonDock_Expression_BaseColor7}"
-                         Text="{Binding BoardText, Mode=OneWay}"/>
+                         Text="{Binding BoardText, Mode=OneWay}" FontFamily="Segoe UI Emoji"/>
             </Grid>
             <Image
-                Grid.Row="1"
+                Grid.Column="1"
                 Margin="4"
                 Stretch="Uniform"
                 Source="{Binding BoardImage}" />

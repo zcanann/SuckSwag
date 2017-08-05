@@ -70,7 +70,6 @@
     <Compile Include="Source\Engine\EngineViewModel.cs" />
     <Compile Include="Source\Engine\EngineTask.cs" />
     <Compile Include="Source\PieceFinder\PieceFinderViewModel.cs" />
-    <Compile Include="Source\Engine\ImageRecognition.cs" />
     <Compile Include="Source\BoardFinder\BoardFinderViewModel.cs" />
     <Compile Include="Source\Engine\ChessEngine\BitBoard.cs" />
     <Compile Include="Source\Engine\ChessEngine\Book.cs" />
@@ -260,19 +259,31 @@
     <Resource Include="Content\Close.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Content\Images\black_bishop.bmp" />
-    <EmbeddedResource Include="Content\Images\black_king.bmp" />
-    <EmbeddedResource Include="Content\Images\black_knight.bmp" />
-    <EmbeddedResource Include="Content\Images\black_pawn.bmp" />
-    <EmbeddedResource Include="Content\Images\black_queen.bmp" />
-    <EmbeddedResource Include="Content\Images\black_rook.bmp" />
-    <EmbeddedResource Include="Content\Images\board.bmp" />
-    <EmbeddedResource Include="Content\Images\white_bishop.bmp" />
-    <EmbeddedResource Include="Content\Images\white_king.bmp" />
-    <EmbeddedResource Include="Content\Images\white_knight.bmp" />
-    <EmbeddedResource Include="Content\Images\white_pawn.bmp" />
-    <EmbeddedResource Include="Content\Images\white_queen.bmp" />
-    <EmbeddedResource Include="Content\Images\white_rook.bmp" />
+    <EmbeddedResource Include="Content\Images\black_queen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Content\Images\board.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Content\Images\black_king.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Content\Images\black_knight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Content\Images\black_pawn.png" />
+    <EmbeddedResource Include="Content\Images\black_rook.png" />
+    <EmbeddedResource Include="Content\Images\white_bishop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Content\Images\white_king.png" />
+    <EmbeddedResource Include="Content\Images\white_knight.png" />
+    <EmbeddedResource Include="Content\Images\white_pawn.png" />
+    <EmbeddedResource Include="Content\Images\white_queen.png" />
+    <EmbeddedResource Include="Content\Images\white_rook.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Content\Images\black_bishop.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
