@@ -24,7 +24,7 @@
         /// <summary>
         /// Default layout file.
         /// </summary>
-        private const String StandardLayoutResource = "SuckSwag.Content.StandardLayout.xml";
+        private const String DefaultLayoutResource = "SuckSwag.Content.DefaultLayout.xml";
 
         /// <summary>
         /// The save file for the docking layout.
@@ -193,7 +193,7 @@
         /// <param name="dockManager">The docking root to which content is loaded.</param>
         private void ResetLayoutStandard(DockingManager dockManager)
         {
-            this.LoadLayout(dockManager, resourceName: StandardLayoutResource);
+            this.LoadLayout(dockManager, resourceName: DefaultLayoutResource);
         }
 
         /// <summary>
@@ -220,7 +220,7 @@
                 }
 
                 // Something went wrong or the file is not present -- use the standard layout
-                resourceName = MainViewModel.StandardLayoutResource;
+                resourceName = MainViewModel.DefaultLayoutResource;
             }
 
             // Attempt to load layout from resource name

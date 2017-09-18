@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LayoutRoot xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <RootPanel Orientation="Horizontal">
+    <LayoutAnchorablePane Id="66985f74-a2f4-4200-8654-c9b96280d6f6" FloatingWidth="633" FloatingHeight="582" FloatingLeft="-1936" FloatingTop="375">
+      <LayoutAnchorable IsVisible="True" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Square Viewer" ContentId="SquareViewerViewModel" FloatingLeft="-1936" FloatingTop="375" FloatingWidth="633" FloatingHeight="582" LastActivationTimeStamp="09/17/2017 16:46:48" />
+      <LayoutAnchorable IsVisible="True" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Board Finder" ContentId="BoardFinderViewModel" FloatingLeft="-1936" FloatingTop="375" FloatingWidth="633" FloatingHeight="582" LastActivationTimeStamp="09/17/2017 16:46:48" />
+      <LayoutAnchorable IsVisible="True" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Piece Finder" IsSelected="True" ContentId="PieceFinderViewModel" FloatingLeft="-1936" FloatingTop="375" FloatingWidth="633" FloatingHeight="582" LastActivationTimeStamp="09/17/2017 16:46:48" />
+    </LayoutAnchorablePane>
+    <LayoutAnchorablePane Id="e79455d7-34a2-4dc7-b2ac-366556e50ff6" FloatingWidth="1272" FloatingHeight="582" FloatingLeft="756" FloatingTop="472">
+      <LayoutAnchorable IsVisible="True" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Engine" IsSelected="True" ContentId="EngineViewModel" FloatingLeft="756" FloatingTop="472" FloatingWidth="1272" FloatingHeight="582" LastActivationTimeStamp="09/17/2017 16:46:48" />
+    </LayoutAnchorablePane>
+  </RootPanel>
+  <TopSide />
+  <RightSide />
+  <LeftSide />
+  <BottomSide />
+  <FloatingWindows />
+  <Hidden />
+</LayoutRoot>
