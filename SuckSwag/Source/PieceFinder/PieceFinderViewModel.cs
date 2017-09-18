@@ -189,13 +189,25 @@
             }
         }
 
+        private string LastBoardHash { get; set; }
+
         public Bitmap FindPieces(GameBoard gameBoard)
         {
             Bitmap board = BoardFinderViewModel.GetInstance().FindBoard();
-            Bitmap parsedPieces = ImageUtils.PolarizeBlackWhite(board);
+
+            // Hash the board and see if we've already processed this
+            string boardHash = ImageUtils.ComputeImageHash(board);
+            if (boardHash == this.LastBoardHash)
+            {
+                return board;
+            }
+            this.LastBoardHash = boardHash;
+
+            Bitmap parsedPieces = ImageUtils.PolarizeBlackWhite(ImageUtils.DiffBitmaps(BoardFinderViewModel.Board, ImageUtils.Clone(board)));
 
             if (parsedPieces == null)
             {
+                this.BoardImage = null;
                 return parsedPieces;
             }
 

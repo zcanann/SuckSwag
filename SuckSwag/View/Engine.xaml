@@ -6,21 +6,139 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="SuckSwagEngine"
-    d:DesignHeight="256"
-    d:DesignWidth="256"
+    d:DesignHeight="640"
+    d:DesignWidth="640"
     x:ClassModifier="internal"
     DataContext="{Binding EngineViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
     <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
+
+            <Border
+                Grid.Row="0"
+                Padding="4"
+                Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+                BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}">
+                <WrapPanel VerticalAlignment="Center">
+                    <Button
+                        Padding="4"
+                        Background="{StaticResource AvalonDock_Expression_BaseColor8}"
+                        Command="{Binding AutoSetupCommand}"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor12}">
+                        <TextBlock Text="Auto Setup" />
+                    </Button>
+                    <CheckBox
+                        Margin="8,0,4,0"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        IsChecked="{Binding PlayingWhite}" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Text="Playing White" />
+                    <CheckBox
+                        Margin="8,0,4,0"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        IsChecked="{Binding PlayingBlack}" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Text="Playing Black" />
+                    <CheckBox
+                        Margin="8,0,4,0"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        IsChecked="{Binding WhiteToMove}" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Text="White to Move" />
+                    <CheckBox
+                        Margin="8,0,4,0"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        IsChecked="{Binding BlackToMove}" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Text="Black to Move" />
+                </WrapPanel>
+            </Border>
+
+            <Border
+                Grid.Row="1"
+                Padding="4"
+                Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+                BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}">
+                <WrapPanel>
+                    <CheckBox
+                        Margin="0,0,4,0"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        IsChecked="{Binding WhiteCanCastleKS}" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Text="White KS Castle" />
+                    <CheckBox
+                        Margin="8,0,4,0"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        IsChecked="{Binding WhiteCanCastleQS}" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Text="White QS Castle" />
+                    <CheckBox
+                        Margin="8,0,4,0"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        IsChecked="{Binding BlackCanCastleKS}" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Text="Black KS Castle" />
+                    <CheckBox
+                        Margin="8,0,4,0"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        IsChecked="{Binding BlackCanCastleQS}" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Text="Black QS Castle" />
+                    <CheckBox
+                        Margin="8,0,4,0"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        IsChecked="{Binding EnPassantAvilable}" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Text="En Passant Available" />
+                </WrapPanel>
+            </Border>
+
             <Image
-                Grid.Column="0"
+                Grid.Row="2"
                 Margin="4"
-                Stretch="Uniform"
-                Source="{Binding BoardImage}" />
+                Source="{Binding BoardImage}"
+                Stretch="Uniform" />
         </Grid>
     </Grid>
 </UserControl>

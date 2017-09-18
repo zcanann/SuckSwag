@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SuckSwag.Source.BoardFinder;
+using System;
 
 namespace SuckSwag.Source.GameState
 {
@@ -9,8 +10,6 @@ namespace SuckSwag.Source.GameState
         public GameBoard()
         {
             this.Pieces = new GamePiece[SquareCount, SquareCount];
-            this.PlayingWhite = true;
-            this.WhiteToMove = true;
 
             // Initialize board to be empty
             for (int y = 0; y < SquareCount; y++)
@@ -23,20 +22,6 @@ namespace SuckSwag.Source.GameState
         }
 
         public GamePiece[,] Pieces { get; private set; }
-
-        public bool PlayingWhite { get; private set; }
-
-        public bool WhiteToMove { get; private set; }
-
-        public bool EnPassantAvilable { get; private set; }
-
-        public bool WhiteCanCastleKS { get; private set; }
-
-        public bool WhiteCanCastleQS { get; private set; }
-
-        public bool BlackCanCastleKS { get; private set; }
-
-        public bool BlackCanCastleQS { get; private set; }
 
         public int GetPieceCount()
         {
@@ -57,15 +42,15 @@ namespace SuckSwag.Source.GameState
         }
         public void SetPlayingWhite(bool playingWhite)
         {
-            this.PlayingWhite = playingWhite;
+            EngineViewModel.GetInstance().PlayingWhite = playingWhite;
         }
 
-        private void QuickSetup()
+        public void AutoSetup()
         {
-            this.WhiteCanCastleKS = true;
-            this.WhiteCanCastleQS = true;
-            this.BlackCanCastleKS = true;
-            this.BlackCanCastleQS = true;
+            EngineViewModel.GetInstance().WhiteCanCastleKS = true;
+            EngineViewModel.GetInstance().WhiteCanCastleQS = true;
+            EngineViewModel.GetInstance().BlackCanCastleKS = true;
+            EngineViewModel.GetInstance().BlackCanCastleQS = true;
 
             for (int column = 0; column < GameBoard.SquareCount; column++)
             {
@@ -78,26 +63,30 @@ namespace SuckSwag.Source.GameState
 
                     if (this.Pieces[row, column].Color == GamePiece.PieceColor.White)
                     {
-                        if (this.PlayingWhite)
+                        if (EngineViewModel.GetInstance().PlayingWhite)
                         {
-                            this.PlayingWhite = false;
+                            EngineViewModel.GetInstance().PlayingWhite = false;
+                            EngineViewModel.GetInstance().WhiteToMove = false;
                         }
                         else
                         {
-                            this.PlayingWhite = true;
+                            EngineViewModel.GetInstance().PlayingWhite = true;
+                            EngineViewModel.GetInstance().WhiteToMove = true;
                         }
 
                         return;
                     }
                     else if (this.Pieces[row, column].Color == GamePiece.PieceColor.Black)
                     {
-                        if (this.PlayingWhite)
+                        if (EngineViewModel.GetInstance().PlayingWhite)
                         {
-                            this.PlayingWhite = true;
+                            EngineViewModel.GetInstance().PlayingWhite = true;
+                            EngineViewModel.GetInstance().WhiteToMove = true;
                         }
                         else
                         {
-                            this.PlayingWhite = false;
+                            EngineViewModel.GetInstance().PlayingWhite = false;
+                            EngineViewModel.GetInstance().WhiteToMove = false;
                         }
 
                         return;
@@ -168,7 +157,7 @@ namespace SuckSwag.Source.GameState
                 fen += "/";
             }
 
-            if (this.WhiteToMove)
+            if (EngineViewModel.GetInstance().WhiteToMove)
             {
                 fen += " w ";
             }
@@ -177,32 +166,32 @@ namespace SuckSwag.Source.GameState
                 fen += " b ";
             }
 
-            if (this.WhiteCanCastleKS)
+            if (EngineViewModel.GetInstance().WhiteCanCastleKS)
             {
                 fen += "K";
             }
 
-            if (this.WhiteCanCastleQS)
+            if (EngineViewModel.GetInstance().WhiteCanCastleQS)
             {
                 fen += "Q";
             }
 
-            if (!this.WhiteCanCastleKS && !this.WhiteCanCastleQS)
+            if (!EngineViewModel.GetInstance().WhiteCanCastleKS && !EngineViewModel.GetInstance().WhiteCanCastleQS)
             {
                 fen += "-";
             }
 
-            if (this.BlackCanCastleKS)
+            if (EngineViewModel.GetInstance().BlackCanCastleKS)
             {
                 fen += "k";
             }
 
-            if (this.BlackCanCastleQS)
+            if (EngineViewModel.GetInstance().BlackCanCastleQS)
             {
                 fen += "q";
             }
 
-            if (!this.BlackCanCastleKS && !this.BlackCanCastleQS)
+            if (!EngineViewModel.GetInstance().BlackCanCastleKS && !EngineViewModel.GetInstance().BlackCanCastleQS)
             {
                 fen += "-";
             }
@@ -221,7 +210,7 @@ namespace SuckSwag.Source.GameState
         public void UpdateSquare(int x, int y, GamePiece.PieceName pieceName, GamePiece.PieceColor pieceColor)
         {
             // Adjust coords since we're looking at it 'upside down'
-            if (!this.PlayingWhite)
+            if (!EngineViewModel.GetInstance().PlayingWhite)
             {
                 y = (GameBoard.SquareCount - 1) - y;
                 x = (GameBoard.SquareCount - 1) - x;
@@ -236,36 +225,36 @@ namespace SuckSwag.Source.GameState
             // Out of position rooks:
             if (this.Pieces[0, 0].Name != GamePiece.PieceName.Rook)
             {
-                this.BlackCanCastleQS = false;
+                EngineViewModel.GetInstance().BlackCanCastleQS = false;
             }
 
             if (this.Pieces[7, 0].Name != GamePiece.PieceName.Rook)
             {
-                this.BlackCanCastleKS = false;
+                EngineViewModel.GetInstance().BlackCanCastleKS = false;
             }
 
             if (this.Pieces[0, 7].Name != GamePiece.PieceName.Rook)
             {
-                this.WhiteCanCastleQS = false;
+                EngineViewModel.GetInstance().WhiteCanCastleQS = false;
             }
 
             if (this.Pieces[7, 7].Name != GamePiece.PieceName.Rook)
             {
-                this.WhiteCanCastleKS = false;
+                EngineViewModel.GetInstance().WhiteCanCastleKS = false;
             }
 
             // Out of position black king:
             if (this.Pieces[4, 0].Name != GamePiece.PieceName.King)
             {
-                this.BlackCanCastleKS = false;
-                this.BlackCanCastleQS = false;
+                EngineViewModel.GetInstance().BlackCanCastleKS = false;
+                EngineViewModel.GetInstance().BlackCanCastleQS = false;
             }
 
             // Out of position white king:
             if (this.Pieces[4, 7].Name != GamePiece.PieceName.King)
             {
-                this.WhiteCanCastleKS = false;
-                this.WhiteCanCastleQS = false;
+                EngineViewModel.GetInstance().WhiteCanCastleKS = false;
+                EngineViewModel.GetInstance().WhiteCanCastleQS = false;
             }
         }
 
@@ -274,7 +263,7 @@ namespace SuckSwag.Source.GameState
             string boardString = string.Empty;
 
             // Print regularly
-            if (this.WhiteToMove)
+            if (EngineViewModel.GetInstance().WhiteToMove)
             {
                 for (int Row = 0; Row < GameBoard.SquareCount; Row++)
                 {
@@ -317,8 +306,8 @@ namespace SuckSwag.Source.GameState
             switch (this.Pieces[column, row].Name)
             {
                 case GamePiece.PieceName.None:
-                    if ((row % 2 == 1 && column % 2 == 0 || row % 2 == 0 && column % 2 == 1) && this.PlayingWhite ||
-                       (row % 2 == 0 && column % 2 == 0 || row % 2 == 1 && column % 2 == 1) && !this.PlayingWhite)
+                    if ((row % 2 == 1 && column % 2 == 0 || row % 2 == 0 && column % 2 == 1) && EngineViewModel.GetInstance().PlayingWhite ||
+                       (row % 2 == 0 && column % 2 == 0 || row % 2 == 1 && column % 2 == 1) && !EngineViewModel.GetInstance().PlayingWhite)
                     {
                         return "⬜"; // ⬛
                     }
@@ -327,8 +316,8 @@ namespace SuckSwag.Source.GameState
                         return "⬜";
                     }
                 case GamePiece.PieceName.Pawn:
-                    if ((this.Pieces[column, row].Color == GamePiece.PieceColor.Black && this.PlayingWhite) ||
-                        (this.Pieces[column, row].Color == GamePiece.PieceColor.White && !this.PlayingWhite))
+                    if ((this.Pieces[column, row].Color == GamePiece.PieceColor.Black && EngineViewModel.GetInstance().PlayingWhite) ||
+                        (this.Pieces[column, row].Color == GamePiece.PieceColor.White && !EngineViewModel.GetInstance().PlayingWhite))
                     {
                         return "♟";
                     }
@@ -337,8 +326,8 @@ namespace SuckSwag.Source.GameState
                         return "♙";
                     }
                 case GamePiece.PieceName.Knight:
-                    if ((this.Pieces[column, row].Color == GamePiece.PieceColor.Black && this.PlayingWhite) ||
-                        (this.Pieces[column, row].Color == GamePiece.PieceColor.White && !this.PlayingWhite))
+                    if ((this.Pieces[column, row].Color == GamePiece.PieceColor.Black && EngineViewModel.GetInstance().PlayingWhite) ||
+                        (this.Pieces[column, row].Color == GamePiece.PieceColor.White && !EngineViewModel.GetInstance().PlayingWhite))
                     {
                         return "♞";
                     }
@@ -347,8 +336,8 @@ namespace SuckSwag.Source.GameState
                         return "♘";
                     }
                 case GamePiece.PieceName.Bishop:
-                    if ((this.Pieces[column, row].Color == GamePiece.PieceColor.Black && this.PlayingWhite) ||
-                        (this.Pieces[column, row].Color == GamePiece.PieceColor.White && !this.PlayingWhite))
+                    if ((this.Pieces[column, row].Color == GamePiece.PieceColor.Black && EngineViewModel.GetInstance().PlayingWhite) ||
+                        (this.Pieces[column, row].Color == GamePiece.PieceColor.White && !EngineViewModel.GetInstance().PlayingWhite))
                     {
                         return "♝";
                     }
@@ -357,8 +346,8 @@ namespace SuckSwag.Source.GameState
                         return "♗";
                     }
                 case GamePiece.PieceName.Rook:
-                    if ((this.Pieces[column, row].Color == GamePiece.PieceColor.Black && this.PlayingWhite) ||
-                        (this.Pieces[column, row].Color == GamePiece.PieceColor.White && !this.PlayingWhite))
+                    if ((this.Pieces[column, row].Color == GamePiece.PieceColor.Black && EngineViewModel.GetInstance().PlayingWhite) ||
+                        (this.Pieces[column, row].Color == GamePiece.PieceColor.White && !EngineViewModel.GetInstance().PlayingWhite))
                     {
                         return "♜";
                     }
@@ -367,8 +356,8 @@ namespace SuckSwag.Source.GameState
                         return "♖";
                     }
                 case GamePiece.PieceName.Queen:
-                    if ((this.Pieces[column, row].Color == GamePiece.PieceColor.Black && this.PlayingWhite) ||
-                        (this.Pieces[column, row].Color == GamePiece.PieceColor.White && !this.PlayingWhite))
+                    if ((this.Pieces[column, row].Color == GamePiece.PieceColor.Black && EngineViewModel.GetInstance().PlayingWhite) ||
+                        (this.Pieces[column, row].Color == GamePiece.PieceColor.White && !EngineViewModel.GetInstance().PlayingWhite))
                     {
                         return "♛";
                     }
@@ -377,8 +366,8 @@ namespace SuckSwag.Source.GameState
                         return "♕";
                     }
                 case GamePiece.PieceName.King:
-                    if ((this.Pieces[column, row].Color == GamePiece.PieceColor.Black && this.PlayingWhite) ||
-                        (this.Pieces[column, row].Color == GamePiece.PieceColor.White && !this.PlayingWhite))
+                    if ((this.Pieces[column, row].Color == GamePiece.PieceColor.Black && EngineViewModel.GetInstance().PlayingWhite) ||
+                        (this.Pieces[column, row].Color == GamePiece.PieceColor.White && !EngineViewModel.GetInstance().PlayingWhite))
                     {
                         return "♚";
                     }

@@ -1,6 +1,6 @@
 ﻿namespace SuckSwag.Source.SquareViewer
 {
-    using AForge.Imaging;
+    using Accord.Imaging;
     using Docking;
     using Main;
     using SuckSwag.Source.BoardFinder;

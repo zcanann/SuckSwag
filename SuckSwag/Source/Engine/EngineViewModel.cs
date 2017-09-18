@@ -3,11 +3,13 @@
     using Docking;
     using Main;
     using SuckSwag.Source.GameState;
+    using SuckSwag.Source.Mvvm.Command;
     using SuckSwag.Source.Utils;
     using System;
     using System.Drawing;
     using System.Threading;
     using System.Threading.Tasks;
+    using System.Windows.Input;
     using System.Windows.Media.Imaging;
 
     /// <summary>
@@ -29,6 +31,20 @@
 
         private BitmapImage boardImage;
 
+        private bool playingWhite;
+
+        private bool whiteToMove;
+
+        public bool enPassantAvilable;
+
+        public bool whiteCanCastleKS;
+
+        public bool whiteCanCastleQS;
+
+        public bool blackCanCastleKS;
+
+        public bool blackCanCastleQS;
+
         private static Graphics graphics;
 
         private static Pen Pen = new Pen(Color.Red, 3);
@@ -45,6 +61,7 @@
             this.ContentId = EngineViewModel.ToolContentId;
 
             this.EngineTask = new EngineTask(this.OnBoardUpdate);
+            this.AutoSetupCommand = new RelayCommand(() => this.EngineTask.AutoSetup(), () => true);
 
             Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
@@ -58,6 +75,8 @@
             return EngineViewModel.engineViewModelInstance.Value;
         }
 
+        public ICommand AutoSetupCommand { get; private set; }
+
         public BitmapImage BoardImage
         {
             get
@@ -69,6 +88,134 @@
             {
                 this.boardImage = value;
                 this.RaisePropertyChanged(nameof(this.BoardImage));
+            }
+        }
+
+
+
+        public bool EnPassantAvilable
+        {
+            get
+            {
+                return this.enPassantAvilable;
+            }
+
+            set
+            {
+                this.enPassantAvilable = value;
+                this.RaisePropertyChanged(nameof(this.EnPassantAvilable));
+            }
+        }
+
+        public bool WhiteCanCastleKS
+        {
+            get
+            {
+                return this.whiteCanCastleKS;
+            }
+
+            set
+            {
+                this.whiteCanCastleKS = value;
+                this.RaisePropertyChanged(nameof(this.WhiteCanCastleKS));
+            }
+        }
+
+        public bool WhiteCanCastleQS
+        {
+            get
+            {
+                return this.whiteCanCastleQS;
+            }
+
+            set
+            {
+                this.whiteCanCastleQS = value;
+                this.RaisePropertyChanged(nameof(this.WhiteCanCastleQS));
+            }
+        }
+
+        public bool BlackCanCastleKS
+        {
+            get
+            {
+                return this.blackCanCastleKS;
+            }
+
+            set
+            {
+                this.blackCanCastleKS = value;
+                this.RaisePropertyChanged(nameof(this.BlackCanCastleKS));
+            }
+        }
+
+        public bool BlackCanCastleQS
+        {
+            get
+            {
+                return this.blackCanCastleQS;
+            }
+
+            set
+            {
+                this.blackCanCastleQS = value;
+                this.RaisePropertyChanged(nameof(this.BlackCanCastleQS));
+            }
+        }
+
+        public bool PlayingWhite
+        {
+            get
+            {
+                return this.playingWhite;
+            }
+
+            set
+            {
+                this.playingWhite = value;
+                this.RaisePropertyChanged(nameof(this.PlayingWhite));
+                this.RaisePropertyChanged(nameof(this.PlayingBlack));
+            }
+        }
+
+        public bool PlayingBlack
+        {
+            get
+            {
+                return !this.playingWhite;
+            }
+
+            set
+            {
+                this.PlayingWhite = !value;
+            }
+        }
+
+        public bool WhiteToMove
+        {
+            get
+            {
+                return this.whiteToMove;
+            }
+
+            set
+            {
+                this.whiteToMove = value;
+                this.RaisePropertyChanged(nameof(this.WhiteToMove));
+                this.RaisePropertyChanged(nameof(this.BlackToMove));
+            }
+        }
+
+        public bool BlackToMove
+        {
+            get
+            {
+                return !this.whiteToMove;
+            }
+
+            set
+            {
+                this.WhiteToMove = !value;
             }
         }
 

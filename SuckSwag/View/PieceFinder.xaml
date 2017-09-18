@@ -22,7 +22,7 @@
                     <RowDefinition Height="196"/>
                 </Grid.RowDefinitions>
                 <TextBox Grid.Row="0"
-                         FontSize="14"
+                         FontSize="18"
                          IsReadOnly="True"
                          Background="{StaticResource AvalonDock_Expression_BaseColor3}"
                          Foreground="{StaticResource AvalonDock_Expression_BaseColor7}"

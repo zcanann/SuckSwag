@@ -81,10 +81,10 @@
                 Background="Transparent">
                 <shell:MenuItem
                     Height="24"
-                    shell:WindowChrome.IsHitTestVisibleInChrome="True"
                     Command="{Binding MinimizeCommand}"
                     CommandParameter="{Binding ElementName=SuckSwagWindow}"
-                    ToolTip="Minimize">
+                    ToolTip="Minimize"
+                    WindowChrome.IsHitTestVisibleInChrome="True">
                     <shell:MenuItem.Header>
                         <shell:Image
                             Width="16"
@@ -94,10 +94,10 @@
                 </shell:MenuItem>
                 <shell:MenuItem
                     Height="24"
-                    shell:WindowChrome.IsHitTestVisibleInChrome="True"
                     Command="{Binding MaximizeRestoreCommand}"
                     CommandParameter="{Binding ElementName=SuckSwagWindow}"
-                    ToolTip="Maximize/Restore">
+                    ToolTip="Maximize/Restore"
+                    WindowChrome.IsHitTestVisibleInChrome="True">
                     <shell:MenuItem.Header>
                         <shell:Image
                             Width="16"
@@ -107,10 +107,10 @@
                 </shell:MenuItem>
                 <shell:MenuItem
                     Height="24"
-                    shell:WindowChrome.IsHitTestVisibleInChrome="True"
                     Command="{Binding CloseCommand}"
                     CommandParameter="{Binding ElementName=SuckSwagWindow}"
-                    ToolTip="Close">
+                    ToolTip="Close"
+                    WindowChrome.IsHitTestVisibleInChrome="True">
                     <shell:MenuItem.Header>
                         <shell:Image
                             Width="16"

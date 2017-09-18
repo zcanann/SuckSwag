@@ -1,6 +1,6 @@
 ﻿namespace SuckSwag.Source.Utils
 {
-    using AForge.Imaging;
+    using Accord.Imaging;
     using DataStructures;
     using System;
     using System.Collections.Generic;
@@ -262,17 +262,16 @@
 
         public static string ComputeImageHash(Bitmap bitmap)
         {
-            byte[] rawImageData = new byte[bitmap.Width * bitmap.Height];
+            if (bitmap == null)
+            {
+                return string.Empty;
+            }
 
-            BitmapData bmpd = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height),
-                                                   ImageLockMode.ReadOnly,
-                                                   PixelFormat.Format32bppArgb);
-
-            Marshal.Copy(bmpd.Scan0, rawImageData, 0, bitmap.Width * bitmap.Height);
-
-            bitmap.UnlockBits(bmpd);
-
-            return System.Text.Encoding.UTF8.GetString(ImageUtils.md5.ComputeHash(rawImageData));
+            using (MemoryStream ms = new MemoryStream())
+            {
+                bitmap.Save(ms, ImageFormat.Bmp);
+                return System.Text.Encoding.UTF8.GetString(ImageUtils.md5.ComputeHash(ms.ToArray()));
+            }
         }
 
         /// <summary>

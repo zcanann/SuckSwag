@@ -1,15 +1,13 @@
 ﻿namespace SuckSwag.Source
 {
-    using AForge.Imaging;
     using GameState;
     using Squalr.Source.ActionScheduler;
+    using SuckSwag.Source.BoardFinder;
     using SuckSwag.Source.ChessEngine;
     using SuckSwag.Source.PieceFinder;
-    using SuckSwag.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Drawing;
-    using System.Linq;
 
     /// <summary>
     /// Analyzes the game state to produce a best move.
@@ -22,7 +20,7 @@
 
             this.BestMoveCache = new Dictionary<string, string>();
             this.GameBoard = new GameBoard();
-            this.SearchDepth = 5;
+            this.SearchDepth = 7;
         }
 
         private GameBoard GameBoard { get; set; }
@@ -35,12 +33,23 @@
 
         private int SearchDepth { get; set; }
 
+        public void AutoSetup()
+        {
+            this.GameBoard.AutoSetup();
+        }
+
         protected override void OnUpdate()
         {
+            Bitmap board = PieceFinderViewModel.GetInstance().FindPieces(this.GameBoard);
+
+            // Ensure kings are on the board and game state makes some degree of sense
+            if (!this.PassesSanityChecks())
+            {
+                return;
+            }
+
             DateTime startTime = DateTime.Now;
             string nextMove = string.Empty;
-
-            Bitmap board = PieceFinderViewModel.GetInstance().FindPieces(this.GameBoard);
 
             // Calculate best move
             string newFen = this.GameBoard.GenerateFEN();
@@ -51,7 +60,7 @@
                 nextMove = Cuckoo.simplyCalculateMove(newFen, this.SearchDepth);
 
                 // Inform view of updates
-                this.UpdateBoardCallback(board, nextMove, this.GameBoard.PlayingWhite);
+                this.UpdateBoardCallback(board, nextMove, EngineViewModel.GetInstance().PlayingWhite);
 
                 this.LastFen = newFen;
             }
@@ -61,32 +70,29 @@
             // TODO: Adjust depth
         }
 
-        private Bitmap FindSquares(Bitmap screenShot)
+        private bool PassesSanityChecks()
         {
-            List<Bitmap> potentialBoards = new List<Bitmap>();
+            bool hasWhiteKing = false;
+            bool hasBlackKing = false;
 
-            // Create an instance of blob counter algorithm
-            BlobCounter bc = new BlobCounter();
-            bc.BackgroundThreshold = Color.FromArgb(145, 145, 145);
-            bc.ProcessImage(screenShot);
-
-            IEnumerable<Rectangle> rects = bc.GetObjectsRectangles().Where(x => x.Width > 196 && x.Height > 196);
-
-            // Process blobs
-            using (Graphics g = Graphics.FromImage(screenShot))
+            foreach (GamePiece piece in this.GameBoard.Pieces)
             {
-                RectangleF[] rectangles = rects.Select(x => new RectangleF(x.X, x.Y, x.Width, x.Height)).ToArray();
-
-                if (!rectangles.IsNullOrEmpty())
+                if (piece.Color == GamePiece.PieceColor.White && piece.Name == GamePiece.PieceName.King)
                 {
-                    Pen pen = new Pen(Color.Red);
-                    pen.Width = 7;
-                    g.DrawRectangles(pen, rectangles);
-                    pen.Dispose();
+                    hasWhiteKing = true;
+                }
+                else if (piece.Color == GamePiece.PieceColor.Black && piece.Name == GamePiece.PieceName.King)
+                {
+                    hasBlackKing = true;
                 }
             }
 
-            return screenShot;
+            if (!hasWhiteKing || !hasBlackKing)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
