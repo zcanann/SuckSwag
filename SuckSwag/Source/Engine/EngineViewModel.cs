@@ -35,6 +35,8 @@
 
         private bool whiteToMove;
 
+        public bool fastMode;
+
         public bool enPassantAvilable;
 
         public bool whiteCanCastleKS;
@@ -91,7 +93,19 @@
             }
         }
 
+        public bool FastMode
+        {
+            get
+            {
+                return this.fastMode;
+            }
 
+            set
+            {
+                this.fastMode = value;
+                this.RaisePropertyChanged(nameof(this.FastMode));
+            }
+        }
 
         public bool EnPassantAvilable
         {

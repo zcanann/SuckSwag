@@ -20,7 +20,6 @@
 
             this.BestMoveCache = new Dictionary<string, string>();
             this.GameBoard = new GameBoard();
-            this.SearchDepth = 7;
         }
 
         private GameBoard GameBoard { get; set; }
@@ -31,8 +30,6 @@
 
         private Dictionary<string, string> BestMoveCache { get; set; }
 
-        private int SearchDepth { get; set; }
-
         public void AutoSetup()
         {
             this.GameBoard.AutoSetup();
@@ -40,6 +37,19 @@
 
         protected override void OnUpdate()
         {
+            if (EngineViewModel.GetInstance().FastMode)
+            {
+                this.PerformMoveCalculations(3);
+            }
+            else
+            {
+                this.PerformMoveCalculations(7);
+            }
+        }
+
+        private void PerformMoveCalculations(int depth)
+        {
+
             Bitmap board = PieceFinderViewModel.GetInstance().FindPieces(this.GameBoard);
 
             // Ensure kings are on the board and game state makes some degree of sense
@@ -57,7 +67,7 @@
             if (newFen != this.LastFen)
             {
                 // Use the engine to calculate the next best move
-                nextMove = Cuckoo.simplyCalculateMove(newFen, this.SearchDepth);
+                nextMove = Cuckoo.simplyCalculateMove(newFen, depth);
 
                 // Inform view of updates
                 this.UpdateBoardCallback(board, nextMove, EngineViewModel.GetInstance().PlayingWhite);
@@ -66,8 +76,6 @@
             }
 
             TimeSpan elapsedTime = DateTime.Now - startTime;
-
-            // TODO: Adjust depth
         }
 
         private bool PassesSanityChecks()

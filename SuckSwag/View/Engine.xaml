@@ -36,6 +36,16 @@
                         Margin="8,0,4,0"
                         VerticalAlignment="Center"
                         Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        IsChecked="{Binding FastMode}" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Text="Fast Mode" />
+                    <CheckBox
+                        Margin="8,0,4,0"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
                         IsChecked="{Binding PlayingWhite}" />
                     <TextBlock
                         VerticalAlignment="Center"
