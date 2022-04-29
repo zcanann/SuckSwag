@@ -14,25 +14,8 @@
     /// </summary>
     internal class EngineTask : ScheduledTask
     {
-        public EngineTask(Action<Bitmap, string, bool> updateBoardCallback) : base("Analysis", isRepeated: true, trackProgress: false)
+        public EngineTask() : base("Analysis", isRepeated: true, trackProgress: false)
         {
-            this.UpdateBoardCallback = updateBoardCallback;
-
-            this.BestMoveCache = new Dictionary<string, string>();
-            this.GameBoard = new GameBoard();
-        }
-
-        private GameBoard GameBoard { get; set; }
-
-        private string LastFen { get; set; }
-
-        private Action<Bitmap, string, bool> UpdateBoardCallback { get; set; }
-
-        private Dictionary<string, string> BestMoveCache { get; set; }
-
-        public void AutoSetup()
-        {
-            this.GameBoard.AutoSetup();
         }
 
         protected override void OnUpdate()
@@ -49,41 +32,28 @@
 
         private void PerformMoveCalculations(int depth)
         {
-
-            Bitmap board = PieceFinderViewModel.GetInstance().FindPieces(this.GameBoard);
-
-            // Ensure kings are on the board and game state makes some degree of sense
-            if (!this.PassesSanityChecks())
-            {
-                return;
-            }
-
             DateTime startTime = DateTime.Now;
-            string nextMove = string.Empty;
 
             // Calculate best move
-            string newFen = this.GameBoard.GenerateFEN();
+            string newFen = EngineViewModel.GetInstance().GameBoard.GenerateFEN();
 
-            if (newFen != this.LastFen)
+            if (newFen != EngineViewModel.GetInstance().LastFen)
             {
                 // Use the engine to calculate the next best move
-                nextMove = Cuckoo.simplyCalculateMove(newFen, depth);
+                string nextMove = Cuckoo.simplyCalculateMove(newFen, depth);
 
-                // Inform view of updates
-                this.UpdateBoardCallback(board, nextMove, EngineViewModel.GetInstance().PlayingWhite);
-
-                this.LastFen = newFen;
+                EngineViewModel.GetInstance().NextMove = nextMove;
+                EngineViewModel.GetInstance().LastFen = newFen;
             }
 
             TimeSpan elapsedTime = DateTime.Now - startTime;
         }
-
         private bool PassesSanityChecks()
         {
             bool hasWhiteKing = false;
             bool hasBlackKing = false;
 
-            foreach (GamePiece piece in this.GameBoard.Pieces)
+            foreach (GamePiece piece in EngineViewModel.GetInstance().GameBoard.Pieces)
             {
                 if (piece.Color == GamePiece.PieceColor.White && piece.Name == GamePiece.PieceName.King)
                 {
@@ -112,7 +82,7 @@
         {
             int maxDepth = 0;
 
-            int pieceCount = this.GameBoard.GetPieceCount();
+            int pieceCount = EngineViewModel.GetInstance().GameBoard.GetPieceCount();
 
             if (pieceCount == 0)
             {
@@ -163,11 +133,6 @@
             }
 
             return currentValue;
-        }
-
-        public void SetPlayingWhite(bool whiteToPlay)
-        {
-            GameBoard.SetPlayingWhite(whiteToPlay);
         }
     }
     //// End class

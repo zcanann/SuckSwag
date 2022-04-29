@@ -10,6 +10,7 @@
     using System.Linq;
     using System.Runtime.InteropServices;
     using System.Security.Cryptography;
+    using System.Windows;
     using System.Windows.Forms;
     using System.Windows.Media.Imaging;
 
@@ -37,12 +38,14 @@
         {
             const float similarityThreshold = 0.25f;
 
+            recognition.SimilarityThreshold = similarityThreshold;
+
             if (candidates == null || candidates.Count() <= 0)
             {
                 return null;
             }
 
-            Bitmap bestMatch = candidates
+            var rankedCandidates = candidates
               // Get the similarity to all template images
               .Select(candidate =>
                   new
@@ -57,11 +60,12 @@
                       similarity = candidate.matchings.Select(match => match.Count() > 0 ? match[0].Similarity : 0.0f).Max(),
                   })
 
-               // Threshold the similarity
-               .Where(board => board.similarity > similarityThreshold)
+               .OrderByDescending(candidate => candidate.similarity);
 
                // Pick the best
-               .OrderByDescending(candidate => candidate.similarity)
+            Bitmap bestMatch = rankedCandidates
+               // Threshold the similarity
+               .Where(board => board.similarity > similarityThreshold)
                .FirstOrDefault()?.bitmap;
 
             return bestMatch;
@@ -75,14 +79,16 @@
         /// <returns></returns>
         public static Bitmap BestTemplateMatch(IEnumerable<Bitmap> candidates, params Bitmap[] templates)
         {
-            const float similarityThreshold = 0.25f;
+            const float similarityThreshold = 0.65f;
+
+            recognition.SimilarityThreshold = similarityThreshold;
 
             if (candidates == null || candidates.Count() <= 0)
             {
                 return null;
             }
 
-            Bitmap bestMatch = templates
+            var rankedCandidates = templates
               // Get the similarity to all template images
               .Select(template =>
                   new
@@ -96,18 +102,46 @@
                       bitmap = template.bitmap,
                       similarity = template.matchings.Select(match => match.Count() > 0 ? match[0].Similarity : 0.0f).Max(),
                   })
-
-               // Threshold the similarity
-               .Where(board => board.similarity > similarityThreshold)
-
                // Pick the best
-               .OrderByDescending(template => template.similarity)
-               .FirstOrDefault()?.bitmap;
+               .OrderByDescending(template => template.similarity);
 
+            Bitmap bestMatch = rankedCandidates
+               // Threshold the similarity
+               .Where(square => square.similarity > similarityThreshold)
+               .FirstOrDefault()?.bitmap;
             return bestMatch;
         }
+        public static bool IsGray(Color c)
+        {
+            if (Math.Abs(c.R - c.G) > 5 * 2.55) return false;
+            if (Math.Abs(c.R - c.B) > 5 * 2.55) return false;
+            if (Math.Abs(c.G - c.B) > 5 * 2.55) return false;
+            return true;
+        }
 
-        public static Bitmap DiffBitmaps(Bitmap bitmapA, Bitmap bitmapB)
+        public static void ReplaceColorsWithTransparent(Bitmap bitmap, List<Color> ColorsToReplace)
+        {
+            if (bitmap == null)
+            {
+                return;
+            }
+
+            foreach (Color color in ColorsToReplace)
+            {
+                for (int y = 0; y < bitmap.Height; y++)
+                {
+                    for (int x = 0; x < bitmap.Width; x++)
+                    {
+                        if (!IsGray(bitmap.GetPixel(x, y)))
+                        {
+                            bitmap.SetPixel(x, y, Color.Transparent);
+                        }
+                    }
+                }
+            }
+        }
+
+        public static Bitmap DiffBitmapsAndPrepareForTemplateMatching(Bitmap bitmapA, Bitmap bitmapB)
         {
             if (bitmapA == null || bitmapB == null || bitmapA.Width != bitmapB.Width || bitmapA.Height != bitmapB.Height)
             {
@@ -151,6 +185,22 @@
                             pB[idx + 1] = 255;
                             pB[idx + 0] = 255;
                         }
+
+                        // Force non-gray colors to white
+                        if (Math.Abs(pB[idx + 2] - pB[idx + 1]) > 5 * 2.55
+                            && Math.Abs(pB[idx + 2] - pB[idx + 0]) > 5 * 2.55
+                            && Math.Abs(pB[idx + 1] - pB[idx + 0]) > 5 * 2.55)
+                        {
+                            pB[idx + 2] = 255;
+                            pB[idx + 1] = 255;
+                            pB[idx + 0] = 255;
+                        }
+
+                        // Polarize black/white
+                        byte rgb = (byte)(Math.Round(((pB[idx + 2] + pB[idx + 1] + pB[idx + 0]) / 3.0) / 255) * 255);
+                        pB[idx + 2] = rgb;
+                        pB[idx + 1] = rgb;
+                        pB[idx + 0] = rgb;
                     }
                 }
             }
@@ -173,16 +223,29 @@
                 return null;
             }
 
-            bitmap = ImageUtils.Clone(bitmap);
+            bitmap = ImageUtils.Clone(bitmap, bitmap.PixelFormat);
 
             for (int y = 0; y < bitmap.Height; y++)
             {
                 for (int x = 0; x < bitmap.Width; x++)
                 {
                     Color c = bitmap.GetPixel(x, y);
-                    int rgb = (int)(Math.Round(((c.R + c.G + c.B) / 3.0) / 255) * 255);
-                    bitmap.SetPixel(x, y, Color.FromArgb(rgb, rgb, rgb));
+
+                    if (c.A == 0)
+                    {
+                        bitmap.SetPixel(x, y, Color.White);
+                    }
+                    else
+                    {
+                        int rgb = (int)(Math.Round(((c.R + c.G + c.B) / 3.0) / 255) * 255);
+                        bitmap.SetPixel(x, y, Color.FromArgb(rgb, rgb, rgb));
+                    }
                 }
+            }
+
+            if (bitmap.PixelFormat != PixelFormat.Format24bppRgb)
+            {
+                bitmap = ImageUtils.Clone(bitmap, PixelFormat.Format24bppRgb);
             }
 
             return bitmap;
@@ -279,14 +342,14 @@
         /// </summary>
         /// <param name="sourceBitmap">The bitmap to clone.</param>
         /// <returns>A cloned bitmap.</returns>
-        public static Bitmap Clone(Bitmap sourceBitmap)
+        public static Bitmap Clone(Bitmap sourceBitmap, PixelFormat pixelFormat = PixelFormat.Format24bppRgb)
         {
             if (sourceBitmap == null)
             {
                 return null;
             }
 
-            Bitmap clone = new Bitmap(sourceBitmap.Width, sourceBitmap.Height, PixelFormat.Format24bppRgb);
+            Bitmap clone = new Bitmap(sourceBitmap.Width, sourceBitmap.Height, pixelFormat);
 
             using (Graphics gr = Graphics.FromImage(clone))
             {
@@ -415,6 +478,38 @@
                 return bitmapImage;
             }
         }
+
+        public static void CopyBitmapToWritableBitmap(Bitmap bitmap, WriteableBitmap writeableBitmap)
+        {
+            if (bitmap == null || writeableBitmap == null)
+            {
+                return;
+            }
+
+            if (bitmap.Width != (int)writeableBitmap.Width || bitmap.Height != (int)writeableBitmap.Height)
+            {
+                bitmap = new Bitmap(bitmap, new System.Drawing.Size((int)writeableBitmap.Width, (int)writeableBitmap.Height));
+            }
+
+            BitmapData data = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            try
+            {
+                writeableBitmap.Lock();
+                CopyMemory(writeableBitmap.BackBuffer, data.Scan0,
+                    (writeableBitmap.BackBufferStride * bitmap.Height));
+                writeableBitmap.AddDirtyRect(new Int32Rect(0, 0, bitmap.Width, bitmap.Height));
+                writeableBitmap.Unlock();
+            }
+            finally
+            {
+                bitmap.UnlockBits(data);
+                bitmap.Dispose();
+            }
+        }
+
+        [DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory")]
+        public static extern void CopyMemory(IntPtr dest, IntPtr source, int Length);
     }
     //// End class
 }

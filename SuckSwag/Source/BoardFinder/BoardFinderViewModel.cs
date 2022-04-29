@@ -12,6 +12,7 @@
     using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
+    using System.Windows.Media;
     using System.Windows.Media.Imaging;
 
     /// <summary>
@@ -41,6 +42,8 @@
         private BoardFinderViewModel() : base("Board Finder")
         {
             this.ContentId = BoardFinderViewModel.ToolContentId;
+            this.Tint = new SolidColorBrush(System.Windows.Media.Color.FromArgb(64, 0, 0, 255));
+            this.Tint.Freeze();
 
             Assembly self = Assembly.GetExecutingAssembly();
 
@@ -75,13 +78,29 @@
             }
         }
 
+        public SolidColorBrush tint;
+
+        public SolidColorBrush Tint
+        {
+            get
+            {
+                return this.tint;
+            }
+
+            set
+            {
+                this.tint = value;
+                this.RaisePropertyChanged(nameof(this.Tint));
+            }
+        }
+
         public Bitmap FindBoard()
         {
             IEnumerable<Bitmap> potentialBoards = SquareViewerViewModel.GetInstance().FindSquares();
 
             Bitmap board = ImageUtils.BestCandidateMatch(potentialBoards.ToArray(), BoardFinderViewModel.Board);
 
-            this.BoardImage = ImageUtils.BitmapToBitmapImage(ImageUtils.Tint(board, Color.DarkBlue));
+            this.BoardImage = ImageUtils.BitmapToBitmapImage(board);
 
             return board;
         }

@@ -16,6 +16,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
 
@@ -144,11 +145,23 @@
                 </WrapPanel>
             </Border>
 
-            <Image
+            <TextBlock
                 Grid.Row="2"
+                VerticalAlignment="Center"
+                Background="Transparent"
+                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                Text="{Binding NextMove}" />
+
+            <Image
+                Grid.Row="3"
                 Margin="4"
-                Source="{Binding BoardImage}"
+                Source="{Binding BoardImage, Mode=OneWay, IsAsync=True}"
                 Stretch="Uniform" />
+            <Rectangle
+                Grid.Row="3"
+                Margin="4"
+                Fill="{Binding Tint}"
+                Stretch="UniformToFill" />
         </Grid>
     </Grid>
 </UserControl>

@@ -10,6 +10,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
+    using System.Windows.Media;
     using System.Windows.Media.Imaging;
 
     /// <summary>
@@ -29,6 +30,23 @@
                 () => { return new EngineViewModel(); },
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
+        public GameBoard GameBoard { get; set; }
+
+        public string LastFen { get; set; }
+
+        public string NextMove
+        {
+            get
+            {
+                return this.nextMove;
+            }
+            set
+            {
+                this.nextMove = value;
+                this.RaisePropertyChanged(nameof(this.NextMove));
+            }
+        }
+
         private BitmapImage boardImage;
 
         private bool playingWhite;
@@ -47,9 +65,11 @@
 
         public bool blackCanCastleQS;
 
+        public string nextMove;
+
         private static Graphics graphics;
 
-        private static Pen Pen = new Pen(Color.Red, 3);
+        private static System.Drawing.Pen Pen = new System.Drawing.Pen(System.Drawing.Color.Red, 3);
 
         private static Point Source = new Point();
 
@@ -62,8 +82,12 @@
         {
             this.ContentId = EngineViewModel.ToolContentId;
 
-            this.EngineTask = new EngineTask(this.OnBoardUpdate);
-            this.AutoSetupCommand = new RelayCommand(() => this.EngineTask.AutoSetup(), () => true);
+            this.GameBoard = new GameBoard();
+            this.ParseTask = new ParseTask();
+            this.EngineTask = new EngineTask();
+            this.AutoSetupCommand = new RelayCommand(() => this.GameBoard.AutoSetup(), () => true);
+            this.Tint = new SolidColorBrush(System.Windows.Media.Color.FromArgb(64, 0, 0, 255));
+            this.Tint.Freeze();
 
             Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
@@ -233,35 +257,48 @@
             }
         }
 
+        private ParseTask ParseTask { get; set; }
+
         private EngineTask EngineTask { get; set; }
+
+        public SolidColorBrush tint;
+
+        public SolidColorBrush Tint
+        {
+            get
+            {
+                return this.tint;
+            }
+
+            set
+            {
+                this.tint = value;
+                this.RaisePropertyChanged(nameof(this.Tint));
+            }
+        }
 
         public void BeginAnalysis()
         {
+            ParseTask.Begin();
             EngineTask.Begin();
         }
 
-        private void OnBoardUpdate(Bitmap boardBitmap, string bestMoveFen, bool playingWhite)
+        public void UpdateBoard(Bitmap boardBitmap)
         {
-            boardBitmap = ImageUtils.Tint(boardBitmap, Color.DarkBlue);
-            boardBitmap = this.DrawMoveSuggestion(boardBitmap, bestMoveFen, playingWhite);
+            boardBitmap = this.DrawMoveSuggestion(boardBitmap);
             this.BoardImage = ImageUtils.BitmapToBitmapImage(boardBitmap);
         }
 
-        private Bitmap DrawMoveSuggestion(Bitmap boardBitmap, string nextMove, bool playingWhite)
+        private Bitmap DrawMoveSuggestion(Bitmap boardBitmap)
         {
-            if (boardBitmap == null)
+            if (boardBitmap == null || this.NextMove == null || this.NextMove.Length < 4)
             {
                 return boardBitmap;
             }
 
-            char[] move = nextMove.ToCharArray();
+            char[] move = this.NextMove.ToCharArray();
 
             graphics = Graphics.FromImage(boardBitmap);
-
-            if (move.Length < 4)
-            {
-                return boardBitmap;
-            }
 
             Source.X = ((byte)'h' - (byte)move[0]);
             Source.Y = ((byte)'8' - (byte)move[1]);
@@ -269,7 +306,7 @@
             Destination.X = ((byte)'h' - (byte)move[2]);
             Destination.Y = ((byte)'8' - (byte)move[3]);
 
-            if (playingWhite)
+            if (this.PlayingWhite)
             {
                 Source.X = GameBoard.SquareCount - Source.X;
                 Destination.X = GameBoard.SquareCount - Destination.X;
@@ -291,8 +328,10 @@
             Destination.X = Destination.X * squarePixelSize - squarePixelSize / 2;
             Destination.Y = Destination.Y * squarePixelSize - squarePixelSize / 2;
 
+            int circleSize = 12;
+
             graphics.DrawLine(Pen, Source, Destination);
-            graphics.DrawEllipse(Pen, Destination.X - 3, Destination.Y - 3, 5, 5);
+            graphics.DrawEllipse(Pen, Destination.X - circleSize / 2, Destination.Y - circleSize / 2, circleSize, circleSize);
             graphics.Dispose();
 
             return boardBitmap;

@@ -13,6 +13,7 @@
     using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
+    using System.Windows.Media;
     using System.Windows.Media.Imaging;
 
     /// <summary>
@@ -62,6 +63,8 @@
 
         private Bitmap WhiteKing { get; set; }
 
+        private Bitmap Empty { get; set; }
+
         private Bitmap[] AllPieces { get; set; }
 
         /// <summary>
@@ -74,77 +77,98 @@
             this.ImageHashes = new Dictionary<string, Bitmap>();
             Assembly self = Assembly.GetExecutingAssembly();
             HashSet<Bitmap> allPieces = new HashSet<Bitmap>();
+            this.Tint = new SolidColorBrush(System.Windows.Media.Color.FromArgb(64, 0, 0, 255));
+            this.Tint.Freeze();
 
             using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.black_bishop.png"))
             {
-                this.BlackBishop = ImageUtils.Clone(new Bitmap(resourceStream));
+                this.BlackBishop = ImageUtils.PolarizeBlackWhite(new Bitmap(resourceStream));
+                this.BlackBishop.Tag = "black_bishop";
                 allPieces.Add(this.BlackBishop);
             }
 
             using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.black_king.png"))
             {
-                this.BlackKing = ImageUtils.Clone(new Bitmap(resourceStream));
+                this.BlackKing = ImageUtils.PolarizeBlackWhite(new Bitmap(resourceStream));
+                this.BlackKing.Tag = "black_king";
                 allPieces.Add(this.BlackKing);
             }
 
             using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.black_knight.png"))
             {
-                this.BlackKnight = ImageUtils.Clone(new Bitmap(resourceStream));
+                this.BlackKnight = ImageUtils.PolarizeBlackWhite(new Bitmap(resourceStream));
+                this.BlackBishop.Tag = "black_knight";
                 allPieces.Add(this.BlackKnight);
             }
 
             using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.black_pawn.png"))
             {
-                this.BlackPawn = ImageUtils.Clone(new Bitmap(resourceStream));
+                this.BlackPawn = ImageUtils.PolarizeBlackWhite(new Bitmap(resourceStream));
+                this.BlackPawn.Tag = "black_pawn";
                 allPieces.Add(this.BlackPawn);
             }
 
             using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.black_queen.png"))
             {
-                this.BlackQueen = ImageUtils.Clone(new Bitmap(resourceStream));
+                this.BlackQueen = ImageUtils.PolarizeBlackWhite(new Bitmap(resourceStream));
+                this.BlackQueen.Tag = "black_queen";
                 allPieces.Add(this.BlackQueen);
             }
 
             using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.black_rook.png"))
             {
-                this.BlackRook = ImageUtils.Clone(new Bitmap(resourceStream));
+                this.BlackRook = ImageUtils.PolarizeBlackWhite(new Bitmap(resourceStream));
+                this.BlackRook.Tag = "black_rook";
                 allPieces.Add(this.BlackRook);
             }
 
             using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.white_bishop.png"))
             {
-                this.WhiteBishop = ImageUtils.Clone(new Bitmap(resourceStream));
+                this.WhiteBishop = ImageUtils.PolarizeBlackWhite(new Bitmap(resourceStream));
+                this.WhiteBishop.Tag = "white_bishop";
                 allPieces.Add(this.WhiteBishop);
             }
 
             using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.white_king.png"))
             {
-                this.WhiteKing = ImageUtils.Clone(new Bitmap(resourceStream));
+                this.WhiteKing = ImageUtils.PolarizeBlackWhite(new Bitmap(resourceStream));
+                this.WhiteKing.Tag = "white_king";
                 allPieces.Add(this.WhiteKing);
             }
 
             using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.white_knight.png"))
             {
-                this.WhiteKnight = ImageUtils.Clone(new Bitmap(resourceStream));
+                this.WhiteKnight = ImageUtils.PolarizeBlackWhite(new Bitmap(resourceStream));
+                this.WhiteKnight.Tag = "white_knight";
                 allPieces.Add(this.WhiteKnight);
             }
 
             using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.white_pawn.png"))
             {
-                this.WhitePawn = ImageUtils.Clone(new Bitmap(resourceStream));
+                this.WhitePawn = ImageUtils.PolarizeBlackWhite(new Bitmap(resourceStream));
+                this.WhitePawn.Tag = "white_pawn";
                 allPieces.Add(this.WhitePawn);
             }
 
             using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.white_queen.png"))
             {
-                this.WhiteQueen = ImageUtils.Clone(new Bitmap(resourceStream));
+                this.WhiteQueen = ImageUtils.PolarizeBlackWhite(new Bitmap(resourceStream));
+                this.WhiteQueen.Tag = "white_queen";
                 allPieces.Add(this.WhiteQueen);
             }
 
             using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.white_rook.png"))
             {
-                this.WhiteRook = ImageUtils.Clone(new Bitmap(resourceStream));
+                this.WhiteRook = ImageUtils.PolarizeBlackWhite(new Bitmap(resourceStream));
+                this.WhiteRook.Tag = "white_rook";
                 allPieces.Add(this.WhiteRook);
+            }
+
+            using (Stream resourceStream = self.GetManifestResourceStream("SuckSwag.Content.Images.empty.png"))
+            {
+                this.Empty = ImageUtils.PolarizeBlackWhite(new Bitmap(resourceStream));
+                this.Empty.Tag = "empty";
+                allPieces.Add(this.Empty);
             }
 
             this.AllPieces = allPieces.ToArray();
@@ -189,6 +213,22 @@
             }
         }
 
+        public SolidColorBrush tint;
+
+        public SolidColorBrush Tint
+        {
+            get
+            {
+                return this.tint;
+            }
+
+            set
+            {
+                this.tint = value;
+                this.RaisePropertyChanged(nameof(this.Tint));
+            }
+        }
+
         private string LastBoardHash { get; set; }
 
         public Bitmap FindPieces(GameBoard gameBoard)
@@ -203,7 +243,7 @@
             }
             this.LastBoardHash = boardHash;
 
-            Bitmap parsedPieces = ImageUtils.PolarizeBlackWhite(ImageUtils.DiffBitmaps(BoardFinderViewModel.Board, ImageUtils.Clone(board)));
+            Bitmap parsedPieces = ImageUtils.DiffBitmapsAndPrepareForTemplateMatching(BoardFinderViewModel.Board, ImageUtils.Clone(board));
 
             if (parsedPieces == null)
             {
@@ -234,7 +274,11 @@
                         this.ImageHashes.Add(imageHash, bestMatch);
                     }
 
-                    if (bestMatch == this.WhitePawn)
+                    if (bestMatch == this.Empty)
+                    {
+                        gameBoard.UpdateSquare(row, col, GamePiece.PieceName.None, GamePiece.PieceColor.Empty);
+                    }
+                    else if (bestMatch == this.WhitePawn)
                     {
                         gameBoard.UpdateSquare(row, col, GamePiece.PieceName.Pawn, GamePiece.PieceColor.White);
                     }

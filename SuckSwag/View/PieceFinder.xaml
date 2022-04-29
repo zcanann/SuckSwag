@@ -14,25 +14,32 @@
     <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="196"/>
+                <ColumnDefinition Width="196" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="196"/>
+                    <RowDefinition Height="196" />
                 </Grid.RowDefinitions>
-                <TextBox Grid.Row="0"
-                         FontSize="18"
-                         IsReadOnly="True"
-                         Background="{StaticResource AvalonDock_Expression_BaseColor3}"
-                         Foreground="{StaticResource AvalonDock_Expression_BaseColor7}"
-                         Text="{Binding BoardText, Mode=OneWay}" FontFamily="Segoe UI Emoji"/>
+                <TextBox
+                    Grid.Row="0"
+                    Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                    FontFamily="Segoe UI Emoji"
+                    FontSize="18"
+                    Foreground="{StaticResource AvalonDock_Expression_BaseColor7}"
+                    IsReadOnly="True"
+                    Text="{Binding BoardText, Mode=OneWay}" />
             </Grid>
             <Image
                 Grid.Column="1"
                 Margin="4"
-                Stretch="Uniform"
-                Source="{Binding BoardImage}" />
+                Source="{Binding BoardImage, Mode=OneWay, IsAsync=True}"
+                Stretch="Uniform" />
+            <Rectangle
+                Grid.Column="1"
+                Margin="4"
+                Fill="{Binding Tint}"
+                Stretch="UniformToFill" />
         </Grid>
     </Grid>
 </UserControl>

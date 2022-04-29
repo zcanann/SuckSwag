@@ -12,6 +12,7 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using System.Windows.Media;
     using System.Windows.Media.Imaging;
 
     /// <summary>
@@ -40,7 +41,9 @@
         {
             this.ContentId = SquareViewerViewModel.ToolContentId;
 
-            this.RedPen = new Pen(color: Color.Red, width: 7);
+            this.RedPen = new System.Drawing.Pen(color: System.Drawing.Color.Red, width: 7);
+            this.Tint = new SolidColorBrush(System.Windows.Media.Color.FromArgb(64, 0, 0, 255));
+            this.Tint.Freeze();
 
             Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
@@ -71,10 +74,26 @@
             }
         }
 
+        public SolidColorBrush tint;
+
+        public SolidColorBrush Tint
+        {
+            get
+            {
+                return this.tint;
+            }
+
+            set
+            {
+                this.tint = value;
+                this.RaisePropertyChanged(nameof(this.Tint));
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
-        private Pen RedPen { get; set; }
+        private System.Drawing.Pen RedPen { get; set; }
 
         /// <summary>
         /// 
@@ -87,7 +106,7 @@
 
             // Create an instance of blob counter algorithm
             BlobCounter blobCounter = new BlobCounter();
-            blobCounter.BackgroundThreshold = Color.FromArgb(145, 145, 145);
+            blobCounter.BackgroundThreshold = System.Drawing.Color.FromArgb(145, 145, 145);
             blobCounter.ProcessImage(screenShot);
 
             // Enforce a minimum square size, and ensure the squares are true squares and not rectangular
@@ -115,7 +134,7 @@
                 }
             }
 
-            this.SquaresImage = ImageUtils.BitmapToBitmapImage(ImageUtils.Tint(screenShot, Color.DarkBlue));
+            this.SquaresImage = ImageUtils.BitmapToBitmapImage(screenShot);
 
             return potentialBoards;
         }
